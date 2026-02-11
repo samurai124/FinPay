@@ -13,3 +13,18 @@ email VARCHAR(100)
 );
 
 
+CREATE TABLE Paiement(
+id INT PRIMARY KEY AUTO_INCREMENT,
+montant DOUBLE,
+datePaiement DATE,
+statut BOOLEAN,
+montantCommision DOUBLE
+);
+
+
+CREATE TABLE CommisionFinPay(
+id INT PRIMARY KEY AUTO_INCREMENT,
+pourcentage DOUBLE,
+montantTotal DOUBLE,
+datecommission DATE
+);
