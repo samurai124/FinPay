@@ -7,11 +7,10 @@ CREATE DATABASE FinPay;
 CREATE DATABASE FinPay;
 USE FinPay;
 CREATE TABLE Prestataire(
-id INT PRIMARY KEY AUTO_INCREMENT,
+id INT PRIMARY KEY auto_increment,
 nomEntreprise varchar(100),
 email VARCHAR(100)
 );
-
 
 CREATE TABLE Paiement(
 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -21,10 +20,16 @@ statut BOOLEAN,
 montantCommision DOUBLE
 );
 
-
 CREATE TABLE CommisionFinPay(
 id INT PRIMARY KEY AUTO_INCREMENT,
 pourcentage DOUBLE,
 montantTotal DOUBLE,
 datecommission DATE
 );
+
+create table Client(
+id int primary key auto_increment,
+nom varchar(30)
+);
+insert into Client(nom) values("imane"),("Loubna"),("hamza"),("Soufiane");
+
