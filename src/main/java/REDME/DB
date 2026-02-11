@@ -1,7 +1,7 @@
 // voici le code de la base de données des tables
 
 
-CREATE DATABASE FinPAy;
+CREATE DATABASE FinPay;
 
 
 CREATE DATABASE FinPay;
