@@ -1,3 +1,15 @@
 // voici le code de la base de données des tables
 
+
 CREATE DATABASE FinPAy;
+
+
+CREATE DATABASE FinPay;
+USE FinPay;
+CREATE TABLE Prestataire(
+id INT PRIMARY KEY AUTO_INCREMENT,
+nomEntreprise varchar(100),
+email VARCHAR(100)
+);
+
+
