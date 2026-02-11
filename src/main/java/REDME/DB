@@ -1,2 +1,3 @@
 // voici le code de la base de données des tables
 
+CREATE DATABASE FinPAy;
