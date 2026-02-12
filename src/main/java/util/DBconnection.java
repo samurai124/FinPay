@@ -18,6 +18,7 @@ public class DBconnection {
     public static Connection getConnection() throws SQLException {
         if (connection == null) {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("ok");
         }
         return connection;
     }
@@ -25,21 +26,23 @@ public class DBconnection {
     // Client
     public static void ajouterClientDB(){}
 
+    public static void getClientsDB(){}
+
     public static void supprimerClientDB(){}
 
     public static void midifierClientDB(){}
 
     // prestataire
     public static void ajouterPrestatireDB(Prestataire prestataire){
-        String requet = "INSERT INTO prestataire (nomEntreprise, email) VALUES (?,?)";
+        String requet = "INSERT INTO prestataire (nomEntreprise, email,solde) VALUES (?,?,?)";
         try{
             Connection connection1 = getConnection();
             PreparedStatement statment = connection1.prepareStatement(requet);
             statment.setString(1,prestataire.getNomEntreprise());
             statment.setString(2,prestataire.getEmail());
+            statment.setFloat(3, prestataire.getSolde());
             statment.executeUpdate();
             System.out.println("Prestataire inséré avec succès");
-
         } catch (SQLException e) {
             System.out.println("Échec de l'insertion du prestataire");
         }
@@ -75,13 +78,13 @@ public class DBconnection {
 
     public static List<Prestataire> getPreatataireDB(){
         List<Prestataire> prestataires = new ArrayList<>();
-        String requet = "SELECT id,nomEntreprise,email FROM prestataire";
+        String requet = "SELECT id,nomEntreprise,email ,solde FROM prestataire";
         try {
             Connection connection1 = getConnection();
             PreparedStatement statement = connection1.prepareStatement(requet);
             ResultSet result = statement.executeQuery();
             while (result.next()){
-                Prestataire prestataire = new Prestataire(result.getInt("id"),result.getString("nomEntreprise"),result.getString("email"));
+                Prestataire prestataire = new Prestataire(result.getInt("id"),result.getString("nomEntreprise"),result.getString("email"),result.getFloat("solde"));
                 prestataires.add(prestataire);
             }
         }catch (SQLException e){

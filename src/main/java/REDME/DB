@@ -6,10 +6,13 @@ CREATE DATABASE FinPay;
 
 CREATE DATABASE FinPay;
 USE FinPay;
+
+
 CREATE TABLE Prestataire(
 id INT PRIMARY KEY auto_increment,
 nomEntreprise varchar(100),
 email VARCHAR(100)
+solde FLOAT
 );
 
 CREATE TABLE Paiement(
@@ -32,4 +35,16 @@ id int primary key auto_increment,
 nom varchar(30)
 );
 insert into Client(nom) values("imane"),("Loubna"),("hamza"),("Soufiane");
+
+
+CREATE TABLE facture(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    numero VARCHAR(100),
+    montant FLOAT,
+    status boolean,
+    idClient INT,
+    idPrestataire INT,
+    FOREIGN KEY (idClient) REFERENCES client(id),
+    FOREIGN KEY (idPrestataire) REFERENCES prestataire(id)
+);
 
