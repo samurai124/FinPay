@@ -157,6 +157,31 @@ public class FinPay {
 
     public void listerFacture(){
 
+            List<Facture> factures = DBconnection.getFacturesDB();
+            if (factures.isEmpty()){
+                System.out.println("Aucune facture trouvé dans base de donnée");
+                return;
+            }
+            System.out.println("________________________________________________________________________________________________________________");
+            System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
+                    "ID","Numero","Montant","statut","nom client","nom prestataire"
+            );
+            System.out.println("________________________________________________________________________________________________________________");
+        factures.forEach(f->
+                    System.out.printf("| %-15d | %-15s | %-15.2f | %-15b | %-15s | %-15s |\n",
+                            f.getId(),f.getNumero(),f.getMontant(),f.getStatut(),f.getClient().getNom(),f.getPrestataire().getNomEntreprise()
+                    )
+            );
+            System.out.println("________________________________________________________________________________________________________________");
+        }
+
+
+
+
+
+
+
+
 
     }
 
@@ -171,4 +196,4 @@ public class FinPay {
 
 
 
-}
+

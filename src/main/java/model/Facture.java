@@ -58,4 +58,20 @@ public class Facture {
 
         return statut;
     }
+
+    public Prestataire getPrestataire() {
+        return prestataire;
+    }
+
+    public void setPrestataire(Prestataire prestataire) {
+        this.prestataire = prestataire;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 }
