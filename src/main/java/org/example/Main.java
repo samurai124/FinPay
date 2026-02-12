@@ -11,7 +11,12 @@ public class Main {
         FinPay finPay = new FinPay();
 //       finPay.ajouterPrestatire();
 //        finPay.listerPrestataire();
-        finPay.modifierPrestataire();
-       finPay.supprimerPrestataire();
+  //      finPay.modifierPrestataire();
+  //     finPay.supprimerPrestataire();
+    //    finPay.ajouterClient();
+     //   finPay.listerClient();
+   //     finPay.modifierClient();
+    //    finPay.supprimerClient();
+
     }
 }

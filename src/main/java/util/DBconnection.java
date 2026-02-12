@@ -69,7 +69,7 @@ public class DBconnection {
 
     public static List<Client> getClientDB(){
         List<Client> clients = new ArrayList<>();
-        String requet = "SELECT id,nomFROM client";
+        String requet = "SELECT id,nom FROM client";
         try {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(requet);
@@ -82,6 +82,26 @@ public class DBconnection {
             System.out.println("Aucun client trouvé dans la base de données.");
         }
         return clients;
+    }
+
+    public static Client getClientById(int id) {
+        String query = "SELECT id, nom FROM client WHERE id = ?";
+        try {
+            Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Client(
+                        rs.getInt("id"),
+                        rs.getString("nom")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -147,6 +167,18 @@ public class DBconnection {
             System.out.println("Aucun prestataire trouvé dans la base de données.");
         }
         return prestataires;
+    }
+    public static Prestataire getPrestataireById(int id) {
+        String query = "SELECT * FROM prestataire WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Prestataire(rs.getInt("id"), rs.getString("nomEntreprise"), rs.getString("email"), rs.getFloat("solde"));
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
     }
 
     // Facture
