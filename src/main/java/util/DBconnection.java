@@ -8,8 +8,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static DBconnection.getConnection;
-
 public class DBconnection {
 
     private static  String URL =
@@ -72,7 +70,7 @@ public class DBconnection {
 
     public static List<Client> getClientDB(){
         List<Client> clients = new ArrayList<>();
-        String requet = "SELECT id,nomFROM client";
+        String requet = "SELECT id,nom FROM client";
         try {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(requet);
@@ -153,26 +151,27 @@ public class DBconnection {
     }
 
     // Facture
-    public static void ajouterFactureDB(Facture facture){
-        String requet = "INSERT INTO facture (numero,montant, statut) VALUES (?,?,?)";
+    public static void ajouterFactureDB(Facture facture,int idClient, int idPrestataire){
+        String requet = "INSERT INTO facture (numero,montant, status,idClient,idPrestataire) VALUES (?,?,?,?,?)";
         try{
             Connection connection1 = getConnection();
             PreparedStatement statment = connection1.prepareStatement(requet);
             statment.setString(1,facture.getNumero());
             statment.setDouble(2,facture.getMontant());
             statment.setBoolean(3,facture.getStatut());
+            statment.setInt(4,idClient);
+            statment.setInt(5,idPrestataire);
             statment.executeUpdate();
             System.out.println("Facture inséré avec succès");
-
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             System.out.println("Échec de l'insertion du facture");
         }
     }
 
 
-    }
 
-    public static void supprimerFactureDB(){
+ //   public static void supprimerFactureDB() {
 //        String requet = "DELETE FROM facture WHERE id = ?";
 //        try {
 //            Connection connection1 = getConnection();
@@ -184,24 +183,47 @@ public class DBconnection {
 //        }catch (SQLException e){
 //            System.out.println("Échec de la suppression du prestataire");
 //        }
-    }
+  //         }
 
 
-    public static void modifierFactureDB(){}
+        public static void modifierFactureDB () {
+        }
 
-    // Paiment
-    public static void ajouterPaimentDB(){}
+        // Paiment
+        public static void ajouterPaimentDB () {
+        }
 
-    public static void supprimerPaimentDB(){}
+        public static void supprimerPaimentDB () {
+        }
 
-    public static void modifierPaimentDB(){}
+        public static void modifierPaimentDB () {
+        }
+
+        public void listerFactures(){
+        //fonction a modifier
+            String request="SELECT * FROM FACTURE";
+            try {
+                Connection connexion1=getConnection();
+                PreparedStatement statement=connexion1.prepareStatement(request);
+                ResultSet res=statement.executeQuery();
+                while(res.next()){
+
+                }
+
+
+
+
+            }catch(Exception e){
+            }
 
 
 
 
 
-
-
-
-
+        }
 }
+
+
+
+
+

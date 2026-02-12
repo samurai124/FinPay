@@ -1,6 +1,7 @@
 package service;
 
 import model.Client;
+import model.Facture;
 import model.Prestataire;
 import util.DBconnection;
 import util.ValidationDonnees;
@@ -143,7 +144,21 @@ public class FinPay {
         DBconnection.supprimerClientDB(id);
     }
 
+    public void ajouterFacture(){
+        String numero = ValidationDonnees.validateString("le numéro de la facture");
+        float montant = ValidationDonnees.validateFloats("montant de la facture");
+        listerClient();
+        int idClient=ValidationDonnees.validateInts("id de client");
+        listerPrestataire();
+        int idPrestataire=ValidationDonnees.validateInts("id de prestataire");
+        Facture facture = new Facture(numero,montant,false);
+        DBconnection.ajouterFactureDB(facture,idClient,idPrestataire);
+    }
 
+    public void listerFacture(){
+
+
+    }
 
 
 
