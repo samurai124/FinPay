@@ -4,18 +4,28 @@ public class Prestataire {
     private int id;
     private String nomEntreprise;
     private String email;
+    private float solde;
 
-    public Prestataire(String nomEntreprise, String email) {
+    public Prestataire(String nomEntreprise, String email,float solde) {
         this.nomEntreprise = nomEntreprise;
         this.email = email;
+        this.solde = solde;
     }
 
-    public Prestataire(int id, String nomEntreprise, String email) {
+    public Prestataire(int id, String nomEntreprise, String email,float solde) {
         this.id = id;
         this.nomEntreprise = nomEntreprise;
         this.email = email;
+        this.solde = solde;
     }
 
+    public float getSolde() {
+        return solde;
+    }
+
+    public void setSolde(float solde) {
+        this.solde = solde;
+    }
 
     public Prestataire(){}
 
