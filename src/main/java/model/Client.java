@@ -9,6 +9,10 @@ public class Client {
         this.nom = nom;
     }
 
+    public Client(String nom){
+        this.nom = nom;
+    }
+
     public int getId() {
         return id;
     }
