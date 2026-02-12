@@ -7,6 +7,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static DBconnection.getConnection;
+
 public class DBconnection {
 
     private static  String URL =
@@ -113,7 +115,20 @@ public class DBconnection {
 
     }
 
-    public static void supprimerFactureDB(){}
+    public static void supprimerFactureDB(){
+//        String requet = "DELETE FROM facture WHERE id = ?";
+//        try {
+//            Connection connection1 = getConnection();
+//            PreparedStatement statement = connection1.prepareStatement(requet);
+//            statement.setInt(1,id);
+//            statement.executeUpdate();
+//            System.out.println("prestatair supprimé avec succès");
+//
+//        }catch (SQLException e){
+//            System.out.println("Échec de la suppression du prestataire");
+//        }
+    }
+
 
     public static void modifierFactureDB(){}
 
