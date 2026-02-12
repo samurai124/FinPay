@@ -5,6 +5,11 @@ public class Prestataire {
     private String nomEntreprise;
     private String email;
 
+    public Prestataire(String nomEntreprise, String email) {
+        this.nomEntreprise = nomEntreprise;
+        this.email = email;
+    }
+
     public Prestataire(int id, String nomEntreprise, String email) {
         this.id = id;
         this.nomEntreprise = nomEntreprise;
