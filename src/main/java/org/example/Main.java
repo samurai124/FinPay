@@ -17,6 +17,7 @@ public class Main {
      //   finPay.listerClient();
    //     finPay.modifierClient();
     //    finPay.supprimerClient();
+        finPay.listerFacture();
 
     }
 }

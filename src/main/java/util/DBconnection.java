@@ -1,5 +1,6 @@
 package util;
 
+import model.Facture;
 import model.Client;
 import model.Prestataire;
 
@@ -12,6 +13,7 @@ public class DBconnection {
     private static  String URL =
             "jdbc:mysql://localhost:3306/finpay";
     private static  String USER = "root";
+//    private static  String PASSWORD = "2005085";
     private static  String PASSWORD = "";
 
     private static Connection connection = null;
@@ -182,25 +184,99 @@ public class DBconnection {
     }
 
     // Facture
-    public static void ajouterFactureDB(){}
-
-    public static void supprimerFactureDB(){}
-
-    public static void modifierFactureDB(){}
-
-    // Paiment
-    public static void ajouterPaimentDB(){}
-
-    public static void supprimerPaimentDB(){}
-
-    public static void modifierPaimentDB(){}
-
-
-
-
-
-
-
+    public static void ajouterFactureDB(Facture facture,int idClient, int idPrestataire){
+        String requet = "INSERT INTO facture (numero,montant, status,idClient,idPrestataire) VALUES (?,?,?,?,?)";
+        try{
+            Connection connection1 = getConnection();
+            PreparedStatement statment = connection1.prepareStatement(requet);
+            statment.setString(1,facture.getNumero());
+            statment.setDouble(2,facture.getMontant());
+            statment.setBoolean(3,facture.getStatut());
+            statment.setInt(4,idClient);
+            statment.setInt(5,idPrestataire);
+            statment.executeUpdate();
+            System.out.println("Facture inséré avec succès");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Échec de l'insertion du facture");
+        }
+    }
 
 
+
+    public static void supprimerFactureDB() {
+        String requet = "DELETE FROM facture WHERE id = ?";
+        try {
+            Connection connection1 = getConnection();
+            PreparedStatement statement = connection1.prepareStatement(requet);
+            statement.setInt(1,id);
+            statement.setInt(1,id);
+            statement.executeUpdate();
+            System.out.println("facture  supprimé avec succès");
+
+        }catch (SQLException e){
+            System.out.println("Échec de la suppression du facture");
+        }
+           }
+
+
+        public static void modifierFactureDB () {
+        }
+
+        // Paiment
+        public static void ajouterPaimentDB () {
+        }
+
+        public static void supprimerPaimentDB () {
+        }
+
+        public static void modifierPaimentDB () {
+        }
+//fonction pour creer une facture
+        public static List<Facture> getFacturesDB(){
+            List<Facture>factures=new ArrayList<>();
+            String request="SELECT * FROM FACTURE";
+            try {
+                Connection connexion1=getConnection();
+                PreparedStatement statement=connexion1.prepareStatement(request);
+                ResultSet res=statement.executeQuery();
+                while(res.next()){
+
+                    Facture facture =new Facture(res.getInt("id"),res.getString("numero"),res.getFloat("montant"),res.getBoolean("status"),getClientById(res.getInt("idClient")),getPrestataireById(res.getInt("idPrestataire")));
+                    factures.add(facture);
+                }
+
+
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+                System.out.println("aucune facture n'existe");
+            }
+            return factures;
+
+        }
+
+        // fonction modifier Facture
+    public void modifierFacture(Facture facture, int idClient, int idPrestataire, String champ){
+        String requet = "UPDATE facture SET " + champ + " = ? WHERE id = ?";
+
+        try{
+        Connection connection1 = getConnection();
+        PreparedStatement statment = connection1.prepareStatement(requet);
+        statment.setString(1,facture.getNumero());
+        statment.setDouble(2,facture.getMontant());
+        statment.setBoolean(3,facture.getStatut());
+        statment.setInt(4,idClient);
+        statment.setInt(5,idPrestataire);
+        statment.executeUpdate();
+        System.out.println("Facture modifié avec succés");
+    } catch (SQLException e) {
+        System.out.println(e.getMessage());
+        System.out.println("Échec de modification du facture");
+    }
+    }
 }
+
+
+
+
+

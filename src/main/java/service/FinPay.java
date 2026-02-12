@@ -1,6 +1,7 @@
 package service;
 
 import model.Client;
+import model.Facture;
 import model.Prestataire;
 import util.DBconnection;
 import util.ValidationDonnees;
@@ -143,6 +144,46 @@ public class FinPay {
         DBconnection.supprimerClientDB(id);
     }
 
+    public void ajouterFacture(){
+        String numero = ValidationDonnees.validateString("le numéro de la facture");
+        float montant = ValidationDonnees.validateFloats("montant de la facture");
+        listerClient();
+        int idClient=ValidationDonnees.validateInts("id de client");
+        listerPrestataire();
+        int idPrestataire=ValidationDonnees.validateInts("id de prestataire");
+        Facture facture = new Facture(numero,montant,false);
+        DBconnection.ajouterFactureDB(facture,idClient,idPrestataire);
+    }
+
+    public void listerFacture(){
+
+            List<Facture> factures = DBconnection.getFacturesDB();
+            if (factures.isEmpty()){
+                System.out.println("Aucune facture trouvé dans base de donnée");
+                return;
+            }
+            System.out.println("________________________________________________________________________________________________________________");
+            System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
+                    "ID","Numero","Montant","statut","nom client","nom prestataire"
+            );
+            System.out.println("________________________________________________________________________________________________________________");
+        factures.forEach(f->
+                    System.out.printf("| %-15d | %-15s | %-15.2f | %-15b | %-15s | %-15s |\n",
+                            f.getId(),f.getNumero(),f.getMontant(),f.getStatut(),f.getClient().getNom(),f.getPrestataire().getNomEntreprise()
+                    )
+            );
+            System.out.println("________________________________________________________________________________________________________________");
+        }
+
+
+
+
+
+
+
+
+
+    }
 
 
 
@@ -156,4 +197,3 @@ public class FinPay {
 
 
 
-}

@@ -14,11 +14,13 @@ public class Facture {
         this.statut = status;
     }
 
-    public Facture(int id ,String numero, double montant,boolean status){
+    public Facture(int id ,String numero, double montant,boolean status,Client client,Prestataire prestataire){
         this.id = id;
         this.numero = numero;
         this.montant = montant;
         this.statut = status;
+        this.client=client;
+        this.prestataire=prestataire;
     }
 
     public int getId() {
@@ -51,5 +53,25 @@ public class Facture {
 
     public void setStatut(boolean statut) {
         this.statut = statut;
+    }
+    public Boolean getStatut() {
+
+        return statut;
+    }
+
+    public Prestataire getPrestataire() {
+        return prestataire;
+    }
+
+    public void setPrestataire(Prestataire prestataire) {
+        this.prestataire = prestataire;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 }
