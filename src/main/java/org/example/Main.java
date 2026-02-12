@@ -1,5 +1,6 @@
 package org.example;
 
+import service.FinPay;
 import util.ValidationDonnees;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -7,8 +8,10 @@ import util.ValidationDonnees;
 public class Main {
     static void main() {
 
-        int age = ValidationDonnees.validateInts("age");
-        System.out.println(age);
-
+        FinPay finPay = new FinPay();
+        finPay.ajouterPrestatire();
+        finPay.listerPrestataire();
+        finPay.modifierPrestataire();
+        finPay.supprimerPrestataire();
     }
 }
