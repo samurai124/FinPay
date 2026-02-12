@@ -1,5 +1,6 @@
 package util;
 
+import model.Facture;
 import model.Prestataire;
 
 import java.sql.*;
@@ -11,7 +12,7 @@ public class DBconnection {
     private static  String URL =
             "jdbc:mysql://localhost:3306/finpay";
     private static  String USER = "root";
-    private static  String PASSWORD = "";
+    private static  String PASSWORD = "2005085";
 
     private static Connection connection = null;
 
@@ -91,7 +92,24 @@ public class DBconnection {
     }
 
     // Facture
-    public static void ajouterFactureDB(){}
+    public static void ajouterFactureDB(Facture facture){
+        String requet = "INSERT INTO facture (numero,montant, statut) VALUES (?,?,?)";
+        try{
+            Connection connection1 = getConnection();
+            PreparedStatement statment = connection1.prepareStatement(requet);
+            statment.setString(1,facture.getNumero());
+            statment.setDouble(2,facture.getMontant());
+            statment.setBoolean(3,facture.getStatut());
+            statment.executeUpdate();
+            System.out.println("Facture inséré avec succès");
+
+        } catch (SQLException e) {
+            System.out.println("Échec de l'insertion du facture");
+        }
+    }
+
+
+    }
 
     public static void supprimerFactureDB(){}
 

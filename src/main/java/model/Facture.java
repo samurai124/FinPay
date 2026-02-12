@@ -50,4 +50,8 @@ public class Facture {
     public void setStatut(boolean statut) {
         this.statut = statut;
     }
+    public Boolean getStatut() {
+
+        return statut;
+    }
 }
