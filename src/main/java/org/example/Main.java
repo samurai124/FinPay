@@ -9,11 +9,14 @@ public class Main {
     static void main() {
 
         FinPay finPay = new FinPay();
-     //   finPay.ajouterPrestatire();
+//       finPay.ajouterPrestatire();
 //        finPay.listerPrestataire();
- //       finPay.modifierPrestataire();
-   //    finPay.supprimerPrestataire();
-   //     finPay.ajouterClient();
-        finPay.ajouterFacture();
+  //      finPay.modifierPrestataire();
+  //     finPay.supprimerPrestataire();
+    //    finPay.ajouterClient();
+     //   finPay.listerClient();
+   //     finPay.modifierClient();
+    //    finPay.supprimerClient();
+
     }
 }
