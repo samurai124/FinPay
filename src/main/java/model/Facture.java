@@ -5,6 +5,8 @@ public class Facture {
     private String numero;
     private double montant;
     private boolean statut;
+    private Prestataire prestataire;
+    private Client client;
 
     public Facture(String numero, double montant,boolean status){
         this.numero = numero;
