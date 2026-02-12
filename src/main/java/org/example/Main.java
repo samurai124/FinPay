@@ -9,9 +9,9 @@ public class Main {
     static void main() {
 
         FinPay finPay = new FinPay();
-        finPay.ajouterPrestatire();
-        finPay.listerPrestataire();
+//       finPay.ajouterPrestatire();
+//        finPay.listerPrestataire();
         finPay.modifierPrestataire();
-        finPay.supprimerPrestataire();
+       finPay.supprimerPrestataire();
     }
 }
