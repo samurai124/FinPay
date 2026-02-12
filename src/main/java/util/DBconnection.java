@@ -137,7 +137,7 @@ public class DBconnection {
             PreparedStatement statement = connection1.prepareStatement(requet);
             ResultSet result = statement.executeQuery();
             while (result.next()){
-                Prestataire prestataire = new Prestataire(result.getInt("id"),result.getString("nomEntreprise"),result.getString("email"));
+                Prestataire prestataire = new Prestataire(result.getInt("id"),result.getString("nomEntreprise"),result.getString("email"),result.getFloat("solde"));
                 prestataires.add(prestataire);
             }
         }catch (SQLException e){
