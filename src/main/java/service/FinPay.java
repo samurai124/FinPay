@@ -107,7 +107,7 @@ public class FinPay {
 
     // fonction pour modifier le client
     public void modifierClient(){
-        listerPrestataire();
+        listerClient();
         int id = ValidationDonnees.validateInts("client id tu veux modifier ");
         Client client = DBconnection.getClientDB().stream().filter(element->element.getId() == id).findAny().orElse(null);
         if (client == null){
@@ -118,7 +118,7 @@ public class FinPay {
         System.out.println("|            tu ne peux pas modifier l’id               |");
         System.out.println("________________________________________________________");
         System.out.printf("| %-15s | %-15s |\n",
-                "ID","Entreprise"
+                "ID","Nom"
         );
         System.out.println("________________________________________________________");
         System.out.printf("| %-15d | %-15s |\n",
@@ -142,6 +142,7 @@ public class FinPay {
         }
         DBconnection.supprimerClientDB(id);
     }
+
 
 
 
