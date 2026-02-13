@@ -16,8 +16,6 @@ public class Main {
 static Scanner sc = new Scanner(System.in);
 static  FinPay finPay = new FinPay();
     static void main() {
-
-
         int choix;
         do {
             System.out.println("------------------------------------------------------");
