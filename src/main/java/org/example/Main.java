@@ -1,5 +1,6 @@
 package org.example;
 
+import model.Client;
 import model.Prestataire;
 import service.FinPay;
 import util.DBconnection;
@@ -7,8 +8,7 @@ import util.ValidationDonnees;
 
 import java.util.Scanner;
 
-import static util.DBconnection.getPreatataireDB;
-import static util.DBconnection.getPrestataireById;
+import static util.DBconnection.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -45,7 +45,7 @@ static  FinPay finPay = new FinPay();
                 default -> System.out.println("entrez un nombre entre 1 et 4");
             }
         }else if(choix == 2){
-            Prestataire pr = getPrestataireById(chercherPrestataire());
+            Prestataire pr = getPrestataireById(chercher("entrez l'id du prestataire :"));
             if( pr != null ){
             System.out.println("------------------------------------------------------");
             System.out.println("1- Gérer les clients\n" +
@@ -62,10 +62,17 @@ static  FinPay finPay = new FinPay();
             default -> System.out.println("entrez un nombre entre 1 et 4 ");
             }
             }else{
-                System.out.println("cet id n'existe pas");
+                System.out.println("ce prestataire n'existe pas");
             }
         }else if (choix == 3){
-            // les fonctions du paiement et historique des paiements du client
+            Client client = getClientById(chercher("entrez l'id du client:"));
+            if(client != null){
+                // les fonctions du paiement et historique des paiements du client
+                System.out.println("bonjour");
+            }else{
+                System.out.println("ce client n'existe pas");
+            }
+
         }
         } while (choix != 4);
     }
@@ -94,7 +101,7 @@ static  FinPay finPay = new FinPay();
             case 2 -> finPay.modifierPrestataire();
             case 3 -> finPay.supprimerPrestataire();
             case 4 -> finPay.listerPrestataire();
-            case 5 -> System.out.println("chercher"); // <---------- fonction ici
+            case 5 -> finPay.chercherPrestataire(chercher("entrez l'id du prestataire à chercher : ")); // <---------- fonction ici
             case 6 -> System.out.println("Retour");
             default -> System.out.println("entre un nombre entre 1 et 6");
         }
@@ -118,7 +125,7 @@ static  FinPay finPay = new FinPay();
             case 2 -> finPay.modifierClient();
             case 3 -> finPay.supprimerClient();
             case 4 -> finPay.listerClient();
-            case 5 -> System.out.println("chercher client"); // <--------- fonction ici
+            case 5 -> finPay.chercherClient(chercher("entrez l'id du client à chercher: "));
             case 6 -> System.out.println("Retour");
             default -> System.out.println("entrez un nombre entre 1 et 6");
         }
@@ -139,7 +146,7 @@ static  FinPay finPay = new FinPay();
             c = entreChoix();
             switch (c){
                 case 1 -> finPay.ajouterFacture();
-                case 2 -> System.out.println("modifier"); // <---------- fonction ici
+                case 2 -> finPay.modifierFacture();
                 case 3 -> finPay.listerFacture();
                 case 4 -> System.out.println("filter par status"); // <--------- fonction ici
                 case 5 -> System.out.println("Retour");
@@ -148,9 +155,8 @@ static  FinPay finPay = new FinPay();
         }while(c != 6);
     }
 
-    public static int chercherPrestataire(){
-        System.out.print("entrez l'id du prestataire :" );
+    public static int chercher(String phrase){
+        System.out.print(phrase);
         return sc.nextInt();
     }
-
 }
