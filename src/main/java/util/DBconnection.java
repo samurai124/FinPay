@@ -183,7 +183,7 @@ public class DBconnection {
         return null;
     }
 
-    // Facture
+    // Facture ajouter facture du database fonctionnelle
     public static void ajouterFactureDB(Facture facture,int idClient, int idPrestataire){
         String requet = "INSERT INTO facture (numero,montant, status,idClient,idPrestataire) VALUES (?,?,?,?,?)";
         try{
@@ -204,12 +204,11 @@ public class DBconnection {
 
 
 
-    public static void supprimerFactureDB() {
+    public static void supprimerFactureDB(int id) {
         String requet = "DELETE FROM facture WHERE id = ?";
         try {
             Connection connection1 = getConnection();
             PreparedStatement statement = connection1.prepareStatement(requet);
-            statement.setInt(1,id);
             statement.setInt(1,id);
             statement.executeUpdate();
             System.out.println("facture  supprimé avec succès");
@@ -220,10 +219,32 @@ public class DBconnection {
            }
 
 
-        public static void modifierFactureDB () {
-        }
+    public void modifierFacture(Facture facture, int idClient, int idPrestataire, String champ){
+        String requet = "UPDATE facture SET " + champ + " = ? WHERE id = ?";
 
-        // Paiment
+        try{
+            Connection connection1 = getConnection();
+            PreparedStatement statment = connection1.prepareStatement(requet);
+            statment.setString(1,facture.getNumero());
+            statment.setDouble(2,facture.getMontant());
+            statment.setBoolean(3,facture.getStatut());
+            statment.setInt(4,idClient);
+            statment.setInt(5,idPrestataire);
+            statment.executeUpdate();
+            System.out.println("Facture modifié avec succés");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Échec de modification du facture");
+        }
+    }
+
+
+
+
+
+
+
+    // Paiment
         public static void ajouterPaimentDB () {
         }
 
@@ -256,24 +277,6 @@ public class DBconnection {
         }
 
         // fonction modifier Facture
-    public void modifierFacture(Facture facture, int idClient, int idPrestataire, String champ){
-        String requet = "UPDATE facture SET " + champ + " = ? WHERE id = ?";
-
-        try{
-        Connection connection1 = getConnection();
-        PreparedStatement statment = connection1.prepareStatement(requet);
-        statment.setString(1,facture.getNumero());
-        statment.setDouble(2,facture.getMontant());
-        statment.setBoolean(3,facture.getStatut());
-        statment.setInt(4,idClient);
-        statment.setInt(5,idPrestataire);
-        statment.executeUpdate();
-        System.out.println("Facture modifié avec succés");
-    } catch (SQLException e) {
-        System.out.println(e.getMessage());
-        System.out.println("Échec de modification du facture");
-    }
-    }
 }
 
 
