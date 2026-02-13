@@ -246,6 +246,18 @@ public class FinPay {
     }
 
 public void filterParStatus(boolean statut){
+    System.out.println("saisir 1 pour les  factures payée et 2 pour  les factures non payées");
+    int choix=ValidationDonnees.validateInts("choix");
+    if(choix==1){
+        afficherFacture();
+    }
+
+
+
+
+
+
+
 
 
 }
