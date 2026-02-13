@@ -204,13 +204,12 @@ public class DBconnection {
 
 
 
-    public static void supprimerFactureDB() {
+    public static void supprimerFactureDB(int id) {
         String requet = "DELETE FROM facture WHERE id = ?";
         try {
             Connection connection1 = getConnection();
             PreparedStatement statement = connection1.prepareStatement(requet);
-            statement.setInt(1,id);
-            statement.setInt(1,id);
+            statement.setInt(1,id);;
             statement.executeUpdate();
             System.out.println("facture  supprimé avec succès");
 
