@@ -198,17 +198,34 @@ public class FinPay {
         return id;
     }
     public void afficherFacture(Facture facture){
-        System.out.println();
+        System.out.println("_________________________________________________________________________________________");
         System.out.println("|                       tu ne peux pas modifier l’id                          |");
-        System.out.println("__");
+        System.out.println("_________________________________________________________________________________________");
         System.out.printf("| %-10s | %-10s | %-10s | %-10s | %-10s | %-10s |\n",
                 "ID", "Numero", "Montant", "status", "client", "prestataire"
         );
-        System.out.println("__");
+        System.out.println("_________________________________________________________________________________________");
         System.out.printf("| %-10d | %-10s | %-10.2f | %-10b | %-10s | %-10s |\n",
                 facture.getId(), facture.getNumero(), facture.getMontant(), facture.getStatut(), facture.getClient().getNom(), facture.getPrestataire().getNomEntreprise()
         );
         System.out.println("__");
+    }
+    public void afficherListeFactures(List<Facture> factures) {
+        if (factures == null || factures.isEmpty()) {
+            System.out.println("La liste des factures est vide.");
+            return;
+        }
+        System.out.println("_________________________________________________________________________________________");
+        System.out.printf("| %-5s | %-12s | %-10s | %-8s | %-15s | %-15s |\n",
+                "ID", "Numero", "Montant", "Status", "Client", "Prestataire"
+        );
+        System.out.println("|-------|--------------|------------|----------|-----------------|-----------------|");
+        for (Facture f : factures) {
+            System.out.printf("| %-5d | %-12s | %-10.2f | %-8b | %-15s | %-15s |\n",
+                    f.getId(), f.getNumero(), f.getMontant(), f.getStatut(), f.getClient().getNom(), f.getPrestataire().getNomEntreprise()
+            );
+        }
+        System.out.println("_________________________________________________________________________________________");
     }
 
     public void modifierFacture() {

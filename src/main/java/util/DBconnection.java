@@ -15,15 +15,9 @@ public class DBconnection {
     private static  String USER = "root";
     private static  String PASSWORD = "";
 
-    private static Connection connection = null;
-
     public static Connection getConnection() throws SQLException {
-        if (connection == null) {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        }
-        return connection;
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
-
     // Client
     public static void ajouterClientDB(Client client){
         String requet = "INSERT INTO client (nom) VALUES (?) ";
