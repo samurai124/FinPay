@@ -2,6 +2,7 @@ package util;
 
 import model.Facture;
 import model.Client;
+import model.Paiement;
 import model.Prestataire;
 
 import java.sql.*;
@@ -13,7 +14,6 @@ public class DBconnection {
     private static  String URL =
             "jdbc:mysql://localhost:3306/finpay";
     private static  String USER = "root";
-//    private static  String PASSWORD = "2005085";
     private static  String PASSWORD = "";
 
     public static Connection getConnection() throws SQLException {
@@ -89,11 +89,10 @@ public class DBconnection {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return new Client(
-                        rs.getInt("id"),
-                        rs.getString("nom")
-                );
+                return new Client(rs.getInt("id"), rs.getString("nom"));
             }
+            rs.close();
+            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -166,14 +165,20 @@ public class DBconnection {
     }
     public static Prestataire getPrestataireById(int id) {
         String query = "SELECT * FROM prestataire WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try {
+            Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Prestataire(rs.getInt("id"), rs.getString("nomEntreprise"), rs.getString("email"), rs.getFloat("solde"));
+                Prestataire p = new Prestataire(rs.getInt("id"), rs.getString("nomEntreprise"), rs.getString("email"), rs.getFloat("solde"));
+                rs.close();
+                stmt.close();
+                return p;
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -266,6 +271,46 @@ public class DBconnection {
         }
     }
 
+    //filtrer facture par statut
+    public static List<Facture> getFacturesByStatut(boolean statut) {
+        List<Facture> factures = new ArrayList<>();
+        String query = "SELECT * FROM facture WHERE status = ?";
+
+        try {
+            Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setBoolean(1, statut);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int idClient=rs.getInt("idClient");
+                int idPrestataire = rs.getInt("idPrestataire");
+                Client client =DBconnection.getClientById(idClient);
+                Prestataire prestataire =DBconnection.getPrestataireById(idPrestataire);
+                Facture f = new Facture(
+                        rs.getInt("id"),
+                        rs.getString("numero"),
+                        rs.getDouble("montant"),
+                        rs.getBoolean("status"),
+                        client,
+                        prestataire
+
+                );
+                factures.add(f);
+            }
+
+            rs.close();
+            stmt.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return factures;
+    }
+
+
 
 
 
@@ -273,14 +318,98 @@ public class DBconnection {
 
 
     // Paiment
-        public static void ajouterPaimentDB () {
-        }
+    public static void ajouterPaimentDB(Paiement paiement, int idFacture) {
 
-        public static void supprimerPaimentDB () {
-        }
+        String queryP = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommission, idFacture) VALUES (?, ?, ?, ?, ?)";
+        String queryUpdateF = "UPDATE facture SET status = true WHERE id = ?";
 
-        public static void modifierPaimentDB () {
+        try {
+            Connection con = getConnection();
+            con.setAutoCommit(false); // transaction
+
+            PreparedStatement stmP = con.prepareStatement(queryP);
+            PreparedStatement stmF = con.prepareStatement(queryUpdateF);
+
+            stmP.setDouble(1, paiement.getMontant());
+            stmP.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
+            stmP.setBoolean(3, paiement.isStatut());
+            stmP.setDouble(4, paiement.getMontantCommision());
+            stmP.setInt(5, idFacture);
+
+            stmP.executeUpdate();
+
+            stmF.setInt(1, idFacture);
+            stmF.executeUpdate();
+
+            con.commit();
+            System.out.println("Paiement enregistré avec succès.");
+
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de l'ajout du paiement : " + e.getMessage());
         }
+    }
+
+
+    public static void supprimerPaimentDB(int id) {
+        String requetSql = "DELETE FROM Paiement WHERE id = ?";
+        try {
+            Connection con = getConnection();
+            PreparedStatement stmS = con.prepareStatement(requetSql);
+            stmS.setInt(1, id);
+            stmS.executeUpdate();
+            System.out.println("Paiement supprimé avec succès");
+        } catch (SQLException e) {
+            System.out.println("Échec de la suppression : " + e.getMessage());
+        }
+    }
+
+    public static void modifierPaimentDB(int id, String champ, String valeur) {
+
+        String requetSql = "UPDATE Paiement SET " + champ + " = ? WHERE id = ?";
+
+        try {
+            Connection con = getConnection();
+            PreparedStatement stm = con.prepareStatement(requetSql);
+
+            stm.setString(1, valeur);
+            stm.setInt(2, id);
+            int rows = stm.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Paiement mis à jour avec succès.");
+            } else {
+                System.out.println("Aucun paiement trouvé avec cet ID.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Échec de la modification : " + e.getMessage());
+        }
+    }
+    public static List<Paiement> getPaimentDB() {
+        List<Paiement> paiements = new ArrayList<>();
+        String requetSQl = "SELECT * FROM Paiement";
+        try {
+            Connection con = getConnection();
+            Statement stmq = con.createStatement();
+            ResultSet res = stmq.executeQuery(requetSQl);
+
+            while (res.next()) {
+                int idF = res.getInt("idFacture");
+                Facture f = getFactureById(idF);
+
+                Paiement p = new Paiement(
+                        res.getInt("id"),
+                        res.getDouble("montant"),
+                        res.getTimestamp("datePaiement").toLocalDateTime(),
+                        res.getBoolean("statut"),
+                        res.getDouble("montantCommission"),
+                        f
+                );
+                paiements.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des paiements : " + e.getMessage());
+        }
+        return paiements;
+    }
 //fonction pour creer une facture
         public static List<Facture> getFacturesDB(){
             List<Facture>factures=new ArrayList<>();

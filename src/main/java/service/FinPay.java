@@ -2,11 +2,18 @@ package service;
 
 import model.Client;
 import model.Facture;
+import model.Paiement;
 import model.Prestataire;
 import util.DBconnection;
 import util.ValidationDonnees;
 
+
+import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static util.DBconnection.getClientById;
+import static util.DBconnection.getPrestataireById;
 
 public class FinPay {
 
@@ -191,7 +198,7 @@ public class FinPay {
     public int chengerPrestataireFacture(){
         listerPrestataire();
         int id = ValidationDonnees.validateInts("le Prestataire id");
-        if (DBconnection.getPrestataireById(id) == null){
+        if (getPrestataireById(id) == null){
             System.out.println("Ce client n'exist pas dans notre base");
             return 0;
         }
@@ -262,14 +269,127 @@ public class FinPay {
         DBconnection.modifierFactureDB(id, champ, valeur);
     }
 
+public void filterParStatus(boolean statut){
+    System.out.println("saisir 1 pour les  factures payée et 2 pour  les factures non payées");
+    int choix=ValidationDonnees.validateInts("choix");
+    List<Facture>factures=new ArrayList<>();
+    if(choix==1){
+        factures= DBconnection.getFacturesByStatut(true);
+    }else if(choix==2){
+        factures=DBconnection.getFacturesByStatut(false);
+    }else{
+        System.out.println("choix invalide vous devez entrez 1 ou 2");
+        return;
+    }
+    if(factures.isEmpty()){
+        System.out.println("aucune facture trouvée");
+        return;
+    }
+    afficherListeFactures(factures);
+
+public void chercherPrestataire(int id){
+        Prestataire pr = getPrestataireById(id);
+        if(pr!= null){
+            System.out.println("-------------------------------------------------------");
+            System.out.println("prestataire id : " + pr.getId() + " ||  Nom: " + pr.getNomEntreprise() + " || Email" + pr.getEmail());
+            System.out.println("-------------------------------------------------------");
+        }
+}
+
+public void chercherClient(int id){
+        Client client = getClientById(id);
+        if(client != null){
+            System.out.println("-------------------------------------------------------");
+            System.out.println("le client id N° : " + client.getId() + " || nom de client : " + client.getNom());
+            System.out.println("-------------------------------------------------------");
+        }
+}
 
 
 
 
 
 
+
+}
+
+
+    public void enregistrerPaiement() {
+
+        System.out.println("------------- Factures impayées -------------");
+        List<Facture> factures = DBconnection.getFacturesDB();
+        List<Facture> impayees = factures.stream()
+                .filter(f -> !f.getStatut())
+                .toList();
+
+        if (impayees.isEmpty()) {
+            System.out.println("Aucune facture en attente de paiement.");
+            return;
+        }
+
+        for (Facture f : impayees) {
+            System.out.println("ID: " + f.getId()
+                    + " | Num: " + f.getNumero()
+                    + " | Montant: " + f.getMontant());
+        }
+        int id = ValidationDonnees.validateInts("Entrer ID de la facture à payer");
+        Facture facture = impayees.stream().filter(f -> f.getId() == id).findFirst().orElse(null);
+
+        if (facture == null) {
+            System.out.println(" ID invalide !");
+            return;
+        }
+
+        double commission = facture.getMontant() * 0.05;
+
+        Paiement paiement = new Paiement(0, facture.getMontant(), LocalDateTime.now(), true, commission, facture);
+        DBconnection.ajouterPaimentDB(paiement, facture.getId());
+        System.out.println(" Paiement effectué avec succès !");
+    }
+
+
+    // function litser paiment
+    public void listerPaiement(){
+        List<Paiement> paiements=DBconnection.getPaimentDB();
+        if (paiements.isEmpty()){
+            System.out.println("Aucune paiment trouvé dans base de donnée");
+            return;
+        }
+        System.out.println("___________________________________________________________________________________________________");
+        System.out.printf("| %-5s | %-10s | %-20s | %-10s | %-15s |\n", "ID", "Montant", "Date", "Statut", "Commission");
+        System.out.println("____________________________________________________________________________________________________");
+        for (Paiement p : paiements) {
+            System.out.printf("| %-5d | %-10.2f | %-20s | %-10s | %-15.2f |\n",
+                    p.getId(), p.getMontant(), p.getDatePaiement(), p.isStatut() ? "Validé" : "Échec", p.getMontantCommision());
+        }
+        System.out.println("______________________________________________________________________________________________________");
 
     }
+    //function supprimer paiement
+    public void supprimerPaiement(){
+        listerPaiement();
+        int id = ValidationDonnees.validateInts("l'ID du paiement à supprimer");
+        DBconnection.supprimerPaimentDB(id);
+
+    }
+    //function modifier Paiement
+    public void modifierPaiement() {
+        listerPaiement();
+        int id = ValidationDonnees.validateInts("l'ID du paiement a modifier");
+        String champ = ValidationDonnees.validateString("le nom du champ (ex: montant, statut)");
+        String valeur = ValidationDonnees.validateString("la nouvelle valeur");
+        DBconnection.modifierPaimentDB(id, champ, valeur);
+    }
+
+
+
+
+
+
+
+
+
+}
 
 
 
