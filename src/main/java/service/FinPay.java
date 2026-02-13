@@ -7,6 +7,8 @@ import model.Prestataire;
 import util.DBconnection;
 import util.ValidationDonnees;
 
+
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -264,6 +266,34 @@ public class FinPay {
         DBconnection.modifierFactureDB(id, champ, valeur);
     }
 
+public void filterParStatus(boolean statut){
+    System.out.println("saisir 1 pour les  factures payée et 2 pour  les factures non payées");
+    int choix=ValidationDonnees.validateInts("choix");
+    List<Facture>factures=new ArrayList<>();
+    if(choix==1){
+        factures= DBconnection.getFacturesByStatut(true);
+    }else if(choix==2){
+        factures=DBconnection.getFacturesByStatut(false);
+    }else{
+        System.out.println("choix invalide vous devez entrez 1 ou 2");
+        return;
+    }
+    if(factures.isEmpty()){
+        System.out.println("aucune facture trouvée");
+        return;
+    }
+    afficherListeFactures(factures);
+
+
+
+
+
+
+
+
+
+
+}
 
 
     public void enregistrerPaiement() {
