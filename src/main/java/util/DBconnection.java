@@ -276,6 +276,46 @@ public class DBconnection {
         }
     }
 
+    //filtrer facture par statut
+    public static List<Facture> getFacturesByStatut(boolean statut) {
+        List<Facture> factures = new ArrayList<>();
+        String query = "SELECT * FROM facture WHERE status = ?";
+
+        try {
+            Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setBoolean(1, statut);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int idClient=rs.getInt("idClient");
+                int idPrestataire = rs.getInt("idPrestataire");
+                Client client =DBconnection.getClientById(idClient);
+                Prestataire prestataire =DBconnection.getPrestataireById(idPrestataire);
+                Facture f = new Facture(
+                        rs.getInt("id"),
+                        rs.getString("numero"),
+                        rs.getDouble("montant"),
+                        rs.getBoolean("status"),
+                        client,
+                        prestataire
+
+                );
+                factures.add(f);
+            }
+
+            rs.close();
+            stmt.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return factures;
+    }
+
+
 
 
 
