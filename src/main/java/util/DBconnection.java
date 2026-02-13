@@ -13,7 +13,6 @@ public class DBconnection {
     private static  String URL =
             "jdbc:mysql://localhost:3306/finpay";
     private static  String USER = "root";
-//    private static  String PASSWORD = "2005085";
     private static  String PASSWORD = "";
 
     private static Connection connection = null;
@@ -95,11 +94,10 @@ public class DBconnection {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return new Client(
-                        rs.getInt("id"),
-                        rs.getString("nom")
-                );
+                return new Client(rs.getInt("id"), rs.getString("nom"));
             }
+            rs.close();
+            stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -172,14 +170,20 @@ public class DBconnection {
     }
     public static Prestataire getPrestataireById(int id) {
         String query = "SELECT * FROM prestataire WHERE id = ?";
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try {
+            Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Prestataire(rs.getInt("id"), rs.getString("nomEntreprise"), rs.getString("email"), rs.getFloat("solde"));
+                Prestataire p = new Prestataire(rs.getInt("id"), rs.getString("nomEntreprise"), rs.getString("email"), rs.getFloat("solde"));
+                rs.close();
+                stmt.close();
+                return p;
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
