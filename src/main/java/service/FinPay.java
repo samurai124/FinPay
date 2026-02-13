@@ -245,8 +245,7 @@ public class FinPay {
         DBconnection.modifierFactureDB(id, champ, valeur);
     }
 
-public void filterParStatus(){
-    boolean statut = ValidationDonnees.validateBoolean("Entrez true/false");
+public void filterParStatus(boolean statut){
 
 
 }
