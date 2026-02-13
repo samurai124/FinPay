@@ -183,7 +183,7 @@ public class DBconnection {
         return null;
     }
 
-    // Facture
+    // Facture ajouter facture du database fonctionnelle
     public static void ajouterFactureDB(Facture facture,int idClient, int idPrestataire){
         String requet = "INSERT INTO facture (numero,montant, status,idClient,idPrestataire) VALUES (?,?,?,?,?)";
         try{
@@ -209,7 +209,7 @@ public class DBconnection {
         try {
             Connection connection1 = getConnection();
             PreparedStatement statement = connection1.prepareStatement(requet);
-            statement.setInt(1,id);;
+            statement.setInt(1,id);
             statement.executeUpdate();
             System.out.println("facture  supprimé avec succès");
 
@@ -219,10 +219,66 @@ public class DBconnection {
            }
 
 
-        public static void modifierFactureDB () {
-        }
+    public static Facture getFactureById(int id) {
+        String query = "SELECT * FROM facture WHERE id = ?";
+        try {
+            Connection conn = getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Client client = getClientById(rs.getInt("idClient"));
+                Prestataire prestataire = getPrestataireById(rs.getInt("idPrestataire"));
 
-        // Paiment
+                return new Facture(
+                        rs.getInt("id"),
+                        rs.getString("numero"),
+                        rs.getFloat("montant"),
+                        rs.getBoolean("status"),
+                        client,
+                        prestataire
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    // fonction modifier Facture
+    public static void modifierFactureDB(int id, String champ, String valeur) {
+        String requet = "UPDATE facture SET " + champ + " = ? WHERE id = ?";
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(requet);
+
+            if (champ.equals("montant")) {
+                statement.setFloat(1, Float.parseFloat(valeur));
+            } else if (champ.equals("status")) {
+                statement.setBoolean(1, Boolean.parseBoolean(valeur));
+            } else if(champ.equals("client") || champ.equals("prestataire")){
+                statement.setInt(1,Integer.parseInt(valeur));
+            }
+            else {
+                statement.setString(1, valeur);
+            }
+
+            statement.setInt(2, id);
+            statement.executeUpdate();
+            System.out.println("Facture mise à jour avec succès !");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.out.println("Erreur: Format de nombre invalide pour le montant.");
+        }
+    }
+
+
+
+
+
+
+
+    // Paiment
         public static void ajouterPaimentDB () {
         }
 
@@ -254,25 +310,6 @@ public class DBconnection {
 
         }
 
-        // fonction modifier Facture
-    public void modifierFacture(Facture facture, int idClient, int idPrestataire, String champ){
-        String requet = "UPDATE facture SET " + champ + " = ? WHERE id = ?";
-
-        try{
-        Connection connection1 = getConnection();
-        PreparedStatement statment = connection1.prepareStatement(requet);
-        statment.setString(1,facture.getNumero());
-        statment.setDouble(2,facture.getMontant());
-        statment.setBoolean(3,facture.getStatut());
-        statment.setInt(4,idClient);
-        statment.setInt(5,idPrestataire);
-        statment.executeUpdate();
-        System.out.println("Facture modifié avec succés");
-    } catch (SQLException e) {
-        System.out.println(e.getMessage());
-        System.out.println("Échec de modification du facture");
-    }
-    }
 }
 
 
