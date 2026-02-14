@@ -8,70 +8,69 @@ import java.util.List;
 
 public class DBconnection {
 
-    private static  String URL =
-            "jdbc:mysql://localhost:3306/finpay";
-    private static  String USER = "root";
-    private static  String PASSWORD = "";
+    private static String URL = "jdbc:mysql://localhost:3306/finpay";
+    private static String USER = "root";
+    private static String PASSWORD = "";
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
+
     // Client
-    public static void ajouterClientDB(Client client){
+    public static void ajouterClientDB(Client client) {
         String requet = "INSERT INTO client (nom) VALUES (?) ";
-        try{
+        try {
             Connection connection = getConnection();
             PreparedStatement statment = connection.prepareStatement(requet);
-            statment.setString(1,client.getNom());
+            statment.setString(1, client.getNom());
             statment.executeUpdate();
             System.out.println("Client inséré avec succès");
 
-        }catch(SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Échec de l'insertion du client");
         }
     }
 
-
-    public static void supprimerClientDB(int id){
+    public static void supprimerClientDB(int id) {
         String requet = "DELETE FROM client WHERE id = ?";
         try {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(requet);
-            statement.setInt(1,id);
+            statement.setInt(1, id);
             statement.executeUpdate();
             System.out.println("client supprimé avec succès");
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Échec de la suppression du prestataire");
         }
     }
 
-    public static void midifierClientDB(int id, String nom, String nvNom){
+    public static void midifierClientDB(int id, String nom, String nvNom) {
         String requet = "UPDATE client SET " + nom + " = ? WHERE id = ?";
         try {
             Connection connection1 = getConnection();
             PreparedStatement statement = connection1.prepareStatement(requet);
-            statement.setString(1,nvNom);
-            statement.setInt(2,id);
+            statement.setString(1, nvNom);
+            statement.setInt(2, id);
             statement.executeUpdate();
             System.out.println("nom de client modifier avec succès");
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Échec de la modification");
         }
     }
 
-    public static List<Client> getClientDB(){
+    public static List<Client> getClientDB() {
         List<Client> clients = new ArrayList<>();
         String requet = "SELECT id,nom FROM client";
         try {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(requet);
             ResultSet result = statement.executeQuery();
-            while (result.next()){
-                Client client = new Client(result.getInt("id"),result.getString("nom"));
+            while (result.next()) {
+                Client client = new Client(result.getInt("id"), result.getString("nom"));
                 clients.add(client);
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Aucun client trouvé dans la base de données.");
         }
         return clients;
@@ -96,18 +95,14 @@ public class DBconnection {
         return null;
     }
 
-
-
-
-
     // prestataire
-    public static void ajouterPrestatireDB(Prestataire prestataire){
+    public static void ajouterPrestatireDB(Prestataire prestataire) {
         String requet = "INSERT INTO prestataire (nomEntreprise, email,solde) VALUES (?,?,?)";
-        try{
+        try {
             Connection connection1 = getConnection();
             PreparedStatement statment = connection1.prepareStatement(requet);
-            statment.setString(1,prestataire.getNomEntreprise());
-            statment.setString(2,prestataire.getEmail());
+            statment.setString(1, prestataire.getNomEntreprise());
+            statment.setString(2, prestataire.getEmail());
             statment.setFloat(3, prestataire.getSolde());
             statment.executeUpdate();
             System.out.println("Prestataire inséré avec succès");
@@ -116,50 +111,52 @@ public class DBconnection {
         }
     }
 
-    public static void supprimerPrestatireDB(int id){
+    public static void supprimerPrestatireDB(int id) {
         String requet = "DELETE FROM prestataire WHERE id = ?";
         try {
             Connection connection1 = getConnection();
             PreparedStatement statement = connection1.prepareStatement(requet);
-            statement.setInt(1,id);
+            statement.setInt(1, id);
             statement.executeUpdate();
             System.out.println("prestatair supprimé avec succès");
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Échec de la suppression du prestataire");
         }
     }
 
-    public static void modifierPrestatireDB(int id,String champ,String valeur){
+    public static void modifierPrestatireDB(int id, String champ, String valeur) {
         String requet = "UPDATE prestataire SET " + champ + " = ? WHERE id = ?";
         try {
             Connection connection1 = getConnection();
             PreparedStatement statement = connection1.prepareStatement(requet);
-            statement.setString(1,valeur);
-            statement.setInt(2,id);
+            statement.setString(1, valeur);
+            statement.setInt(2, id);
             statement.executeUpdate();
             System.out.println("Prestataire modifier avec succès");
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Échec de la modification");
         }
     }
 
-    public static List<Prestataire> getPreatataireDB(){
+    public static List<Prestataire> getPreatataireDB() {
         List<Prestataire> prestataires = new ArrayList<>();
         String requet = "SELECT id,nomEntreprise,email ,solde FROM prestataire";
         try {
             Connection connection1 = getConnection();
             PreparedStatement statement = connection1.prepareStatement(requet);
             ResultSet result = statement.executeQuery();
-            while (result.next()){
-                Prestataire prestataire = new Prestataire(result.getInt("id"),result.getString("nomEntreprise"),result.getString("email"),result.getFloat("solde"));
+            while (result.next()) {
+                Prestataire prestataire = new Prestataire(result.getInt("id"), result.getString("nomEntreprise"),
+                        result.getString("email"), result.getFloat("solde"));
                 prestataires.add(prestataire);
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Aucun prestataire trouvé dans la base de données.");
         }
         return prestataires;
     }
+
     public static Prestataire getPrestataireById(int id) {
         String query = "SELECT * FROM prestataire WHERE id = ?";
         try {
@@ -168,7 +165,8 @@ public class DBconnection {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                Prestataire p = new Prestataire(rs.getInt("id"), rs.getString("nomEntreprise"), rs.getString("email"), rs.getFloat("solde"));
+                Prestataire p = new Prestataire(rs.getInt("id"), rs.getString("nomEntreprise"), rs.getString("email"),
+                        rs.getFloat("solde"));
                 rs.close();
                 stmt.close();
                 return p;
@@ -180,16 +178,16 @@ public class DBconnection {
     }
 
     // Facture ajouter facture du database fonctionnelle
-    public static void ajouterFactureDB(Facture facture,int idClient, int idPrestataire){
+    public static void ajouterFactureDB(Facture facture, int idClient, int idPrestataire) {
         String requet = "INSERT INTO facture (numero,montant, status,idClient,idPrestataire) VALUES (?,?,?,?,?)";
-        try{
+        try {
             Connection connection1 = getConnection();
             PreparedStatement statment = connection1.prepareStatement(requet);
-            statment.setString(1,facture.getNumero());
-            statment.setDouble(2,facture.getMontant());
-            statment.setBoolean(3,facture.getStatut());
-            statment.setInt(4,idClient);
-            statment.setInt(5,idPrestataire);
+            statment.setString(1, facture.getNumero());
+            statment.setDouble(2, facture.getMontant());
+            statment.setBoolean(3, facture.getStatut());
+            statment.setInt(4, idClient);
+            statment.setInt(5, idPrestataire);
             statment.executeUpdate();
             System.out.println("Facture inséré avec succès");
         } catch (SQLException e) {
@@ -198,22 +196,19 @@ public class DBconnection {
         }
     }
 
-
-
     public static void supprimerFactureDB(int id) {
         String requet = "DELETE FROM facture WHERE id = ?";
         try {
             Connection connection1 = getConnection();
             PreparedStatement statement = connection1.prepareStatement(requet);
-            statement.setInt(1,id);
+            statement.setInt(1, id);
             statement.executeUpdate();
             System.out.println("facture  supprimé avec succès");
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Échec de la suppression du facture");
         }
-           }
-
+    }
 
     public static Facture getFactureById(int id) {
         String query = "SELECT * FROM facture WHERE id = ?";
@@ -232,14 +227,14 @@ public class DBconnection {
                         rs.getFloat("montant"),
                         rs.getBoolean("status"),
                         client,
-                        prestataire
-                );
+                        prestataire);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
+
     // fonction modifier Facture
     public static void modifierFactureDB(int id, String champ, String valeur) {
         String requet = "UPDATE facture SET " + champ + " = ? WHERE id = ?";
@@ -251,10 +246,9 @@ public class DBconnection {
                 statement.setFloat(1, Float.parseFloat(valeur));
             } else if (champ.equals("status")) {
                 statement.setBoolean(1, Boolean.parseBoolean(valeur));
-            } else if(champ.equals("client") || champ.equals("prestataire")){
-                statement.setInt(1,Integer.parseInt(valeur));
-            }
-            else {
+            } else if (champ.equals("client") || champ.equals("prestataire")) {
+                statement.setInt(1, Integer.parseInt(valeur));
+            } else {
                 statement.setString(1, valeur);
             }
 
@@ -268,7 +262,7 @@ public class DBconnection {
         }
     }
 
-    //filtrer facture par statut
+    // filtrer facture par statut
     public static List<Facture> getFacturesByStatut(boolean statut) {
         List<Facture> factures = new ArrayList<>();
         String query = "SELECT * FROM facture WHERE status = ?";
@@ -281,10 +275,10 @@ public class DBconnection {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                int idClient=rs.getInt("idClient");
+                int idClient = rs.getInt("idClient");
                 int idPrestataire = rs.getInt("idPrestataire");
-                Client client =DBconnection.getClientById(idClient);
-                Prestataire prestataire =DBconnection.getPrestataireById(idPrestataire);
+                Client client = DBconnection.getClientById(idClient);
+                Prestataire prestataire = DBconnection.getPrestataireById(idPrestataire);
                 Facture f = new Facture(
                         rs.getInt("id"),
                         rs.getString("numero"),
@@ -307,19 +301,18 @@ public class DBconnection {
         return factures;
     }
 
-
-
     // Paiment
-    public static void ajouterPaimentDB(Paiement paiement, int idFacture) {
+    public static int ajouterPaimentDB(Paiement paiement, int idFacture) {
 
-        String queryP = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommission, idFacture) VALUES (?, ?, ?, ?, ?)";
+        String queryP = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture) VALUES (?, ?, ?, ?, ?)";
         String queryUpdateF = "UPDATE facture SET status = true WHERE id = ?";
+        int generatedId = -1;
 
         try {
             Connection con = getConnection();
             con.setAutoCommit(false);
 
-            PreparedStatement stmP = con.prepareStatement(queryP);
+            PreparedStatement stmP = con.prepareStatement(queryP, Statement.RETURN_GENERATED_KEYS);
             PreparedStatement stmF = con.prepareStatement(queryUpdateF);
 
             stmP.setDouble(1, paiement.getMontant());
@@ -328,14 +321,21 @@ public class DBconnection {
             stmP.setDouble(4, paiement.getMontantCommision());
             stmP.setInt(5, idFacture);
             stmP.executeUpdate();
+
+            ResultSet rs = stmP.getGeneratedKeys();
+            if (rs.next()) {
+                generatedId = rs.getInt(1);
+            }
+
             stmF.setInt(1, idFacture);
             stmF.executeUpdate();
             con.commit();
-            System.out.println("Paiement enregistré avec succès.");
+            System.out.println("Paiement enregistré avec succès. ID: " + generatedId);
 
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'ajout du paiement : " + e.getMessage());
         }
+        return generatedId;
     }
 
     public static void supprimerPaimentDB(int id) {
@@ -371,6 +371,7 @@ public class DBconnection {
             System.out.println("Échec de la modification : " + e.getMessage());
         }
     }
+
     public static List<Paiement> getPaimentDB() {
         List<Paiement> paiements = new ArrayList<>();
         String requetSQl = "SELECT * FROM Paiement";
@@ -388,9 +389,8 @@ public class DBconnection {
                         res.getDouble("montant"),
                         res.getTimestamp("datePaiement").toLocalDateTime(),
                         res.getBoolean("statut"),
-                        res.getDouble("montantCommission"),
-                        f
-                );
+                        res.getDouble("montantCommision"),
+                        f);
                 paiements.add(p);
             }
         } catch (SQLException e) {
@@ -399,11 +399,11 @@ public class DBconnection {
         return paiements;
     }
 
-    //methode CommissionFinPay
+    // methode CommissionFinPay
     public static void enregistrerCommissionDB(CommissionFinPay com, int idPaiement) {
-        String query = "INSERT INTO commissionfinpay (pourcentage, montantTotal, datecommission, idPaiement) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO CommisionFinPay (pourcentage, montantTotal, datecommission, idPaiement) VALUES (?, ?, ?, ?)";
         try (Connection con = getConnection();
-             PreparedStatement st = con.prepareStatement(query)) {
+                PreparedStatement st = con.prepareStatement(query)) {
             st.setDouble(1, com.getPourcentage());
             st.setDouble(2, com.getMontantTotal());
             st.setTimestamp(3, Timestamp.valueOf(com.getDatecommission()));
@@ -419,40 +419,39 @@ public class DBconnection {
     public static double calculerTotalCommssion() {
         String query = "SELECT SUM(montantTotal) FROM CommissionFinPay";
         try (Connection con = getConnection();
-            PreparedStatement st = con.prepareStatement(query);
-             ResultSet rs = st.executeQuery(query)) {
-            if (rs.next()) return rs.getDouble(1);
+                PreparedStatement st = con.prepareStatement(query);
+                ResultSet rs = st.executeQuery(query)) {
+            if (rs.next())
+                return rs.getDouble(1);
         } catch (SQLException e) {
-            System.out.println("Erreur :"+e.getMessage());;
+            System.out.println("Erreur :" + e.getMessage());
+            ;
         }
         return 0.0;
     }
-//fonction pour creer une facture
-        public static List<Facture> getFacturesDB(){
-            List<Facture>factures=new ArrayList<>();
-            String request="SELECT * FROM FACTURE";
-            try {
-                Connection connexion1=getConnection();
-                PreparedStatement statement=connexion1.prepareStatement(request);
-                ResultSet res=statement.executeQuery();
-                while(res.next()){
 
-                    Facture facture =new Facture(res.getInt("id"),res.getString("numero"),res.getFloat("montant"),res.getBoolean("status"),getClientById(res.getInt("idClient")),getPrestataireById(res.getInt("idPrestataire")));
-                    factures.add(facture);
-                }
+    // fonction pour creer une facture
+    public static List<Facture> getFacturesDB() {
+        List<Facture> factures = new ArrayList<>();
+        String request = "SELECT * FROM FACTURE";
+        try {
+            Connection connexion1 = getConnection();
+            PreparedStatement statement = connexion1.prepareStatement(request);
+            ResultSet res = statement.executeQuery();
+            while (res.next()) {
 
-
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-                System.out.println("aucune facture n'existe");
+                Facture facture = new Facture(res.getInt("id"), res.getString("numero"), res.getFloat("montant"),
+                        res.getBoolean("status"), getClientById(res.getInt("idClient")),
+                        getPrestataireById(res.getInt("idPrestataire")));
+                factures.add(facture);
             }
-            return factures;
 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("aucune facture n'existe");
         }
+        return factures;
+
+    }
 
 }
-
-
-
-
-

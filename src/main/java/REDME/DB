@@ -1,50 +1,83 @@
-// voici le code de la base de données des tables
-
-
-CREATE DATABASE FinPay;
-
-
+DROP DATABASE IF EXISTS FinPay;
 CREATE DATABASE FinPay;
 USE FinPay;
 
-
 CREATE TABLE Prestataire(
-id INT PRIMARY KEY auto_increment,
-nomEntreprise varchar(100),
-email VARCHAR(100)
-solde FLOAT
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nomEntreprise VARCHAR(100),
+    email VARCHAR(100),
+    solde FLOAT DEFAULT 0.0
 );
 
-CREATE TABLE Paiement(
-id INT PRIMARY KEY AUTO_INCREMENT,
-montant DOUBLE,
-datePaiement DATE,
-statut BOOLEAN,
-montantCommision DOUBLE
+CREATE TABLE CLIENT(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(30)
 );
-
-CREATE TABLE CommisionFinPay(
-id INT PRIMARY KEY AUTO_INCREMENT,
-pourcentage DOUBLE,
-montantTotal DOUBLE,
-datecommission DATE
-);
-
-create table Client(
-id int primary key auto_increment,
-nom varchar(30)
-);
-insert into Client(nom) values("imane"),("Loubna"),("hamza"),("Soufiane");
-
 
 CREATE TABLE facture(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    numero VARCHAR(100),
+    numero VARCHAR(100) UNIQUE,
     montant FLOAT,
-    status boolean,
+    status BOOLEAN DEFAULT FALSE,
     idClient INT,
     idPrestataire INT,
-    FOREIGN KEY (idClient) REFERENCES client(id),
-    FOREIGN KEY (idPrestataire) REFERENCES prestataire(id)
+    FOREIGN KEY(idClient) REFERENCES CLIENT(id) ,
+    FOREIGN KEY(idPrestataire) REFERENCES Prestataire(id)
 );
 
+CREATE TABLE Paiement(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    montant DOUBLE,
+    datePaiement DATETIME,
+    statut BOOLEAN DEFAULT TRUE,
+    montantCommision DOUBLE,
+    idFacture INT,
+    FOREIGN KEY(idFacture) REFERENCES facture(id)
+);
+
+CREATE TABLE CommisionFinPay(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    pourcentage DOUBLE,
+    montantTotal DOUBLE,
+    datecommission DATETIME,
+    idPaiement INT,
+    FOREIGN KEY(idPaiement) REFERENCES Paiement(id)
+);
+
+INSERT INTO Prestataire (nomEntreprise, email, solde) VALUES
+('Maroc Telecom', 'contact@iam.ma', 50000.0),
+('Lydec', 'support@lydec.co.ma', 120000.0),
+('Electra Solar', 'info@electra.com', 1500.0);
+
+
+INSERT INTO client (nom) VALUES
+('Imane'), ('Loubna'), ('Hamza'), ('Soufiane');
+
+
+INSERT INTO facture (numero, montant, status, idClient, idPrestataire) VALUES 
+('FAC-2026-001', 450.50, false, 1, 1),
+('FAC-2026-002', 1200.00, false, 2, 2), 
+('FAC-2026-003', 85.00, false, 3, 1),   
+('FAC-2026-004', 3000.00, false, 4, 3); 
+
+
+INSERT INTO Paiement (montant, datePaiement, statut, montantCommision, idFacture) 
+VALUES (1200.00, '2026-02-14 10:30:00', 1, 24.00, 2);
+
+
+INSERT INTO CommisionFinPay (pourcentage, montantTotal, datecommission, idPaiement)
+VALUES (2.0, 24.00, '2026-02-14 10:30:00', 1);
+
+
+
+CREATE TABLE admin(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(30),
+    password INT UNIQUE
+);
+
+INSERT INTO admin(nom, password) VALUES
+("Hamza", 2004),
+("Imane", 1000),
+("Sofiane", 2000),
+("Loubna", 3000);
