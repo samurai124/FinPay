@@ -288,7 +288,6 @@ public class FinPay {
 
         Paiement paiement = new Paiement(0, facture.getMontant(), LocalDateTime.now(), true, commission, facture);
         DBconnection.ajouterPaimentDB(paiement, facture.getId());
-        System.out.println(" Paiement effectué avec succès !");
 
         CommissionFinPay com = new CommissionFinPay();
         com.setPourcentage(0.05);
@@ -299,14 +298,14 @@ public class FinPay {
 //        System.out.printf("Montant : %.2f | Commission prélevée (5%%) : %.2f\n",
 //                paiement.getMontant(), paiement.getMontantCommision());
 
-        System.out.println("\n----------------- PAIEMENT EFFECTUÉ -------------------------\n");
+        System.out.println("\n----------------- PAIEMENT EFFECTUÉ -----------------------\n");
 
         System.out.printf("Facture N° : %s\n", facture.getNumero());
         System.out.printf("Montant paye : %.2f MAD\n", paiement.getMontant());
         System.out.printf("Commission (5%%) : %.2f MAD\n", paiement.getMontantCommision());
         System.out.printf("Date : %s\n", paiement.getDatePaiement());
 
-        System.out.println("\n---------------------------------------------------------------\n");
+        System.out.println("\n------------------------------------------------------------\n");
 
     }
 
@@ -318,14 +317,14 @@ public class FinPay {
             System.out.println("Aucune paiment trouvé dans base de donnée");
             return;
         }
-        System.out.println("___________________________________________________________________________________________________");
+        System.out.println("_____________________________________________________________________________");
         System.out.printf("| %-5s | %-10s | %-20s | %-10s | %-15s |\n", "ID", "Montant", "Date", "Statut", "Commission");
-        System.out.println("____________________________________________________________________________________________________");
+        System.out.println("_____________________________________________________________________________");
         for (Paiement p : paiements) {
             System.out.printf("| %-5d | %-10.2f | %-20s | %-10s | %-15.2f |\n",
                     p.getId(), p.getMontant(), p.getDatePaiement(), p.isStatut() ? "Validé" : "Échec", p.getMontantCommision());
         }
-        System.out.println("______________________________________________________________________________________________________");
+        System.out.println("_____________________________________________________________________________");
 
     }
     //function supprimer paiement
@@ -349,11 +348,11 @@ public class FinPay {
 
     public void afficherStatistiquesFinPay() {
         double total = DBconnection.calculerTotalCommssion();
-        System.out.println("---------------------------------------------------------------------------");
-        System.out.println("******** RAPPORT FINANCIER DE LA PLATEFORME *************");
-        System.out.println("---------------------------------------------------------------------------");
+        System.out.println("---------------------------------------------------------");
+        System.out.println("********* RAPPORT FINANCIER DE LA PLATEFORME ************");
+        System.out.println("---------------------------------------------------------");
         System.out.printf(" Total des commissions perçues : %.2f MAD\n", total);
-        System.out.println("---------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------");
     }
 
 }
