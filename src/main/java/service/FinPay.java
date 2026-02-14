@@ -4,8 +4,13 @@ import model.*;
 import util.DBconnection;
 import util.ValidationDonnees;
 
+
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static util.DBconnection.getClientById;
+import static util.DBconnection.getPrestataireById;
 
 public class FinPay {
 
@@ -190,7 +195,7 @@ public class FinPay {
     public int chengerPrestataireFacture(){
         listerPrestataire();
         int id = ValidationDonnees.validateInts("le Prestataire id");
-        if (DBconnection.getPrestataireById(id) == null){
+        if (getPrestataireById(id) == null){
             System.out.println("Ce client n'exist pas dans notre base");
             return 0;
         }
@@ -261,6 +266,49 @@ public class FinPay {
         DBconnection.modifierFactureDB(id, champ, valeur);
     }
 
+public void filterParStatus(boolean statut){
+    System.out.println("saisir 1 pour les  factures payée et 2 pour  les factures non payées");
+    int choix=ValidationDonnees.validateInts("choix");
+    List<Facture>factures=new ArrayList<>();
+    if(choix==1){
+        factures= DBconnection.getFacturesByStatut(true);
+    }else if(choix==2){
+        factures=DBconnection.getFacturesByStatut(false);
+    }else{
+        System.out.println("choix invalide vous devez entrez 1 ou 2");
+        return;
+    }
+    if(factures.isEmpty()){
+        System.out.println("aucune facture trouvée");
+        return;
+    }
+    afficherListeFactures(factures);
+
+public void chercherPrestataire(int id){
+        Prestataire pr = getPrestataireById(id);
+        if(pr!= null){
+            System.out.println("-------------------------------------------------------");
+            System.out.println("prestataire id : " + pr.getId() + " ||  Nom: " + pr.getNomEntreprise() + " || Email" + pr.getEmail());
+            System.out.println("-------------------------------------------------------");
+        }
+}
+
+public void chercherClient(int id){
+        Client client = getClientById(id);
+        if(client != null){
+            System.out.println("-------------------------------------------------------");
+            System.out.println("le client id N° : " + client.getId() + " || nom de client : " + client.getNom());
+            System.out.println("-------------------------------------------------------");
+        }
+}
+
+
+
+
+
+
+
+}
 
 
     public void enregistrerPaiement() {
