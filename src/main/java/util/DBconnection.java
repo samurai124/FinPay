@@ -1,9 +1,6 @@
 package util;
 
-import model.Facture;
-import model.Client;
-import model.Paiement;
-import model.Prestataire;
+import model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -312,11 +309,6 @@ public class DBconnection {
 
 
 
-
-
-
-
-
     // Paiment
     public static void ajouterPaimentDB(Paiement paiement, int idFacture) {
 
@@ -325,7 +317,7 @@ public class DBconnection {
 
         try {
             Connection con = getConnection();
-            con.setAutoCommit(false); // transaction
+            con.setAutoCommit(false);
 
             PreparedStatement stmP = con.prepareStatement(queryP);
             PreparedStatement stmF = con.prepareStatement(queryUpdateF);
@@ -335,12 +327,9 @@ public class DBconnection {
             stmP.setBoolean(3, paiement.isStatut());
             stmP.setDouble(4, paiement.getMontantCommision());
             stmP.setInt(5, idFacture);
-
             stmP.executeUpdate();
-
             stmF.setInt(1, idFacture);
             stmF.executeUpdate();
-
             con.commit();
             System.out.println("Paiement enregistré avec succès.");
 
@@ -348,7 +337,6 @@ public class DBconnection {
             System.out.println("Erreur lors de l'ajout du paiement : " + e.getMessage());
         }
     }
-
 
     public static void supprimerPaimentDB(int id) {
         String requetSql = "DELETE FROM Paiement WHERE id = ?";
@@ -409,6 +397,35 @@ public class DBconnection {
             System.out.println("Erreur lors de la récupération des paiements : " + e.getMessage());
         }
         return paiements;
+    }
+
+    //methode CommissionFinPay
+    public static void enregistrerCommissionDB(CommissionFinPay com, int idPaiement) {
+        String query = "INSERT INTO commissionfinpay (pourcentage, montantTotal, datecommission, idPaiement) VALUES (?, ?, ?, ?)";
+        try (Connection con = getConnection();
+             PreparedStatement st = con.prepareStatement(query)) {
+            st.setDouble(1, com.getPourcentage());
+            st.setDouble(2, com.getMontantTotal());
+            st.setTimestamp(3, Timestamp.valueOf(com.getDatecommission()));
+            st.setInt(4, idPaiement);
+
+            st.executeUpdate();
+            System.out.println("Commission archivée avec succès.");
+        } catch (SQLException e) {
+            System.out.println("Erreur archive commission : " + e.getMessage());
+        }
+    }
+
+    public static double calculerTotalCommssion() {
+        String query = "SELECT SUM(montantTotal) FROM CommissionFinPay";
+        try (Connection con = getConnection();
+            PreparedStatement st = con.prepareStatement(query);
+             ResultSet rs = st.executeQuery(query)) {
+            if (rs.next()) return rs.getDouble(1);
+        } catch (SQLException e) {
+            System.out.println("Erreur :"+e.getMessage());;
+        }
+        return 0.0;
     }
 //fonction pour creer une facture
         public static List<Facture> getFacturesDB(){

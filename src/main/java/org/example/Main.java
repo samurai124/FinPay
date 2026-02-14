@@ -17,7 +17,6 @@ static Scanner sc = new Scanner(System.in);
 static  FinPay finPay = new FinPay();
     static void main() {
 
-
         int choix;
         do {
             System.out.println("------------------------------------------------------");
@@ -64,16 +63,33 @@ static  FinPay finPay = new FinPay();
             }else{
                 System.out.println("ce prestataire n'existe pas");
             }
-        }else if (choix == 3){
-            Client client = getClientById(chercher("entrez l'id du client:"));
-            if(client != null){
-                // les fonctions du paiement et historique des paiements du client
-                System.out.println("bonjour");
-            }else{
-                System.out.println("ce client n'existe pas");
+        }else if (choix == 3) {
+                int c;
+                do {
+                    System.out.println("-------------------------------------------------------");
+                    System.out.println("1 - enregistrer paiement: ");
+                    System.out.println("2 - Lister paiements; ");
+                    System.out.println("3 - modifier Paiemen: ");
+                    System.out.println("4 - supprimer Paiemen: ");
+                    System.out.println("5 - Total commissions FinPay: ");
+                    System.out.println("0 - Retour");
+                    System.out.println("-------------------------------------------------------");
+
+                    c = entreChoix();
+
+                    switch (c) {
+                        case 1 -> finPay.enregistrerPaiement();
+                        case 2 -> finPay.listerPaiement();
+                        case 3->finPay.modifierPaiement();
+                        case 4->finPay.supprimerPaiement();
+                        case 5 -> finPay.afficherStatistiquesFinPay();
+                        case 0 -> System.out.println("Retour...");
+                        default -> System.out.println("Choix invalide !");
+                    }
+
+                } while (c != 0);
             }
 
-        }
         } while (choix != 4);
     }
 
