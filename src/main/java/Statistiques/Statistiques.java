@@ -1,17 +1,22 @@
-package util;
+package Statistiques;
 
 import model.Facture;
 import model.Paiement;
+import util.DBconnection;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 
+import static dao.CommissionFinPayDAO.calculerTotalCommssion;
+import static dao.CommissionFinPayDAO.getFacturesDB;
+import static dao.PaimentDAO.getPaimentDB;
+
 public class Statistiques {
 
     public static void afficherStatistiquesGlobales() {
-        List<Paiement> paiements = DBconnection.getPaimentDB();
-        List<Facture> factures = DBconnection.getFacturesDB();
+        List<Paiement> paiements = getPaimentDB();
+        List<Facture> factures = getFacturesDB();
 
         double totalPaiements = paiements.stream()
                 .mapToDouble(Paiement::getMontant)
@@ -41,7 +46,7 @@ public class Statistiques {
     }
 
     public static void afficherHistoriqueFinancier() {
-        List<Paiement> paiements = DBconnection.getPaimentDB();
+        List<Paiement> paiements = getPaimentDB();
 
         if (paiements.isEmpty()) {
             System.out.println("Aucun historique financier disponible.");
@@ -67,4 +72,17 @@ public class Statistiques {
                 });
         System.out.println("__________________________________________________________________________________");
     }
+
+    public static void afficherStatistiquesFinPay() {
+        double total = calculerTotalCommssion();
+        System.out.println("---------------------------------------------------------");
+        System.out.println("********* RAPPORT FINANCIER DE LA FINPAY ************");
+        System.out.println("---------------------------------------------------------");
+        System.out.println(" Total des commissions perçues :"+ total+ "MAD\n");
+        System.out.println("----------------------------------------------------------");
+    }
+
+
+
+
 }

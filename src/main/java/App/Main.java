@@ -1,23 +1,22 @@
-package org.example;
+package App;
 
-import model.Client;
+import Statistiques.Statistiques;
 import model.Prestataire;
-import service.FinPay;
-import util.DBconnection;
+import service.*;
 import util.ValidationDonnees;
-
 import java.util.Scanner;
+import static dao.PrestataireDAO.*;
 
-import static util.DBconnection.*;
-
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    static Scanner sc = new Scanner(System.in);
-    static FinPay finPay = new FinPay();
+    private static Scanner sc = new Scanner(System.in);
+    private static ClientService client = new ClientService();
+    private static PrestataireService prestataire = new PrestataireService();
+    private static PaimentService paiment = new PaimentService();
+    private static ComisionFinPayService comision = new ComisionFinPayService();
+    private static FactureService facture = new FactureService();
+    private static Statistiques statistiques = new Statistiques();
 
     static void main() {
-
         int choix;
         do {
             System.out.println("------------------------------------------------------");
@@ -42,8 +41,8 @@ public class Main {
                     case 1 -> fonctionsPrestataire();
                     case 2 -> fonctionsClient();
                     case 3 -> {
-                        util.Statistiques.afficherStatistiquesGlobales();
-                        util.Statistiques.afficherHistoriqueFinancier();
+                        Statistiques.afficherStatistiquesGlobales();
+                        Statistiques.afficherHistoriqueFinancier();
                     }
                     case 4 -> System.out.println("Retour");
                     default -> System.out.println("entrez un nombre entre 1 et 4");
@@ -62,8 +61,8 @@ public class Main {
                         case 1 -> fonctionsClient();
                         case 2 -> fonctionsFacture();
                         case 3 -> {
-                            util.Statistiques.afficherStatistiquesGlobales();
-                            util.Statistiques.afficherHistoriqueFinancier();
+                            Statistiques.afficherStatistiquesGlobales();
+                            Statistiques.afficherHistoriqueFinancier();
                         }
                         case 4 -> System.out.println("Retour");
                         default -> System.out.println("entrez un nombre entre 1 et 4 ");
@@ -86,11 +85,11 @@ public class Main {
                     c = entreChoix();
 
                     switch (c) {
-                        case 1 -> finPay.enregistrerPaiement();
-                        case 2 -> finPay.listerPaiement();
-                        case 3 -> finPay.modifierPaiement();
-                        case 4 -> finPay.supprimerPaiement();
-                        case 5 -> finPay.afficherStatistiquesFinPay();
+                        case 1 -> paiment.enregistrerPaiement();
+                        case 2 -> paiment.listerPaiement();
+                        case 3 -> paiment.modifierPaiement();
+                        case 4 -> paiment.supprimerPaiement();
+                        case 5 -> statistiques.afficherStatistiquesFinPay();
                         case 0 -> System.out.println("Retour...");
                         default -> System.out.println("Choix invalide !");
                     }
@@ -120,11 +119,11 @@ public class Main {
 
             c = entreChoix();
             switch (c) {
-                case 1 -> finPay.ajouterPrestatire();
-                case 2 -> finPay.modifierPrestataire();
-                case 3 -> finPay.supprimerPrestataire();
-                case 4 -> finPay.listerPrestataire();
-                case 5 -> finPay.chercherPrestatire();
+                case 1 -> prestataire.ajouterPrestatire();
+                case 2 -> prestataire.modifierPrestataire();
+                case 3 -> prestataire.supprimerPrestataire();
+                case 4 -> prestataire.listerPrestataire();
+                case 5 -> prestataire.chercherPrestatire();
                 case 6 -> System.out.println("Retour");
                 default -> System.out.println("entre un nombre entre 1 et 6");
             }
@@ -145,11 +144,11 @@ public class Main {
 
             c = entreChoix();
             switch (c) {
-                case 1 -> finPay.ajouterClient();
-                case 2 -> finPay.modifierClient();
-                case 3 -> finPay.supprimerClient();
-                case 4 -> finPay.listerClient();
-                case 5 -> finPay.chercherClient();
+                case 1 -> client.ajouterClient();
+                case 2 -> client.modifierClient();
+                case 3 -> client.supprimerClient();
+                case 4 -> client.listerClient();
+                case 5 -> client.chercherClient();
                 case 6 -> System.out.println("Retour");
                 default -> System.out.println("entrez un nombre entre 1 et 6");
             }
@@ -170,11 +169,11 @@ public class Main {
 
             c = entreChoix();
             switch (c) {
-                case 1 -> finPay.ajouterFacture();
-                case 2 -> finPay.modifierFacture();
-                case 3 -> finPay.supprimerFacture();
-                case 4 -> finPay.listerFacture();
-                case 5 -> finPay.filterParStatus();
+                case 1 -> facture.ajouterFacture();
+                case 2 -> facture.modifierFacture();
+                case 3 -> facture.supprimerFacture();
+                case 4 -> facture.listerFacture();
+                case 5 -> facture.filterParStatus();
                 case 6 -> System.out.println("Retour");
                 default -> System.out.println("entrez un nombre entre 1 et 6");
             }
