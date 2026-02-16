@@ -320,9 +320,7 @@ public class FinPay {
     public void enregistrerPaiement() {
         List<Facture> factures = DBconnection.getFacturesDB();
 
-        List<Facture> impayees = factures.stream()
-                .filter(f -> !f.getStatut())
-                .toList();
+        List<Facture> impayees = factures.stream().filter(f -> !f.getStatut()).toList();
 
         if (impayees.isEmpty()) {
             System.out.println("Aucune facture impayée.");
@@ -345,10 +343,10 @@ public class FinPay {
 
         int idPaiement = DBconnection.ajouterPaimentDB(paiement, facture.getId());
 
-        if (idPaiement == -1) {
-            System.out.println("Erreur: Impossible d'enregistrer le paiement.");
-            return;
-        }
+//        if (idPaiement == -1) {
+//            System.out.println("Erreur: Impossible d'enregistrer le paiement.");
+//            return;
+//        }
         CommissionFinPay com = new CommissionFinPay();
         com.setPourcentage(0.05);
         com.setMontantTotal(commission);

@@ -10,7 +10,7 @@ public class DBconnection {
 
     private static String URL = "jdbc:mysql://localhost:3306/finpay";
     private static String USER = "root";
-    private static String PASSWORD = "";
+    private static String PASSWORD = "1234";
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
@@ -300,14 +300,49 @@ public class DBconnection {
 
         return factures;
     }
+//
+//    // Paiement
+//    public static int ajouterPaimentDB(Paiement paiement, int idFacture) {
+//        String insert = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture) VALUES (?, ?, ?, ?, ?)";
+//        String update = "UPDATE facture SET status = true WHERE id = ?";
+//        int generatedId = -1;
+//        try (Connection con = getConnection();
+//             PreparedStatement p1 = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+//             PreparedStatement p2 = con.prepareStatement(update)) {
+//            p1.setDouble(1, paiement.getMontant());
+//            p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
+//            p1.setBoolean(3, paiement.isStatut());
+//            p1.setDouble(4, paiement.getMontantCommision());
+//            p1.setInt(5, idFacture);
+//            p1.executeUpdate();
+//
+//            try (ResultSet rs = p1.getGeneratedKeys()) {
+//                if (rs.next()) {
+//                    generatedId = rs.getInt(1);
+//                }
+//            }
+//            p2.setInt(1, idFacture);
+//            p2.executeUpdate();
+//
+//        } catch (SQLException e) {
+//            System.out.println("Erreur paiement: " + e.getMessage());
+//        }
+//
+//        return generatedId;
+//    }
 
-    // Paiement
+//
+//    // Paiement
     public static int ajouterPaimentDB(Paiement paiement, int idFacture) {
         String insert = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture) VALUES (?, ?, ?, ?, ?)";
         String update = "UPDATE facture SET status = true WHERE id = ?";
-        int generatedId = -1;
+        String selctId="SELECT MAX(id) FROM paiement";
+
+        int idPaiement = -1;
+
         try (Connection con = getConnection();
-             PreparedStatement p1 = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement p1 = con.prepareStatement(insert);
+             PreparedStatement p3=con.prepareStatement(selctId);
              PreparedStatement p2 = con.prepareStatement(update)) {
             p1.setDouble(1, paiement.getMontant());
             p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
@@ -316,10 +351,9 @@ public class DBconnection {
             p1.setInt(5, idFacture);
             p1.executeUpdate();
 
-            try (ResultSet rs = p1.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generatedId = rs.getInt(1);
-                }
+            ResultSet rs=p3.executeQuery();
+            if (rs.next()){
+               idPaiement =rs.getInt(1);
             }
             p2.setInt(1, idFacture);
             p2.executeUpdate();
@@ -328,9 +362,8 @@ public class DBconnection {
             System.out.println("Erreur paiement: " + e.getMessage());
         }
 
-        return generatedId;
+        return idPaiement;
     }
-
 
     public static void supprimerPaimentDB(int id) {
         String requetSql = "DELETE FROM Paiement WHERE id = ?";
