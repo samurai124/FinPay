@@ -317,52 +317,46 @@ public class FinPay {
         }
         DBconnection.supprimerClientDB(id);
     }
-
     public void enregistrerPaiement() {
-        System.out.println("------------- Factures impayées -------------");
+
         List<Facture> factures = DBconnection.getFacturesDB();
-        List<Facture> impayees = factures.stream().filter(f -> !f.getStatut()).toList();
+
+        List<Facture> impayees = factures.stream()
+                .filter(f -> !f.getStatut())
+                .toList();
 
         if (impayees.isEmpty()) {
-            System.out.println("Aucune facture en attente de paiement.");
+            System.out.println("Aucune facture impayée.");
             return;
         }
 
         for (Facture f : impayees) {
             System.out.println("ID: " + f.getId() + " | Num: " + f.getNumero() + " | Montant: " + f.getMontant());
         }
-        int id = ValidationDonnees.validateInts("ID de la facture à payer");
+
+        int id = ValidationDonnees.validateInts("ID facture:");
+
         Facture facture = impayees.stream().filter(f -> f.getId() == id).findFirst().orElse(null);
 
         if (facture == null) {
-            System.out.println(" ID invalide !");
+            System.out.println("ID invalide !");
             return;
         }
-
         double commission = facture.getMontant() * 0.02;
-
         Paiement paiement = new Paiement(0, facture.getMontant(), LocalDateTime.now(), true, commission, facture);
+
         int idPaiement = DBconnection.ajouterPaimentDB(paiement, facture.getId());
 
-        if (idPaiement != -1) {
-            CommissionFinPay com = new CommissionFinPay();
-            com.setPourcentage(0.05);
-            com.setMontantTotal(paiement.getMontantCommision());
-            com.setDatecommission(LocalDateTime.now());
-            DBconnection.enregistrerCommissionDB(com, idPaiement);
-        } else {
-            System.out.println("Erreur: Impossible de récupérer l'ID du paiement. La commission n'a pas été enregistrée.");
+        if (idPaiement == -1) {
+            System.out.println("Erreur: Impossible d'enregistrer le paiement.");
+            return;
         }
-
-        System.out.println("\n----------------- PAIEMENT EFFECTUÉ -----------------------\n");
-
-        System.out.printf("Facture N° : %s\n", facture.getNumero());
-        System.out.printf("Montant paye : %.2f MAD\n", paiement.getMontant());
-        System.out.printf("Commission (2%%) : %.2f MAD\n", paiement.getMontantCommision());
-        System.out.printf("Date : %s\n", paiement.getDatePaiement());
-
-        System.out.println("\n------------------------------------------------------------\n");
-
+        CommissionFinPay com = new CommissionFinPay();
+        com.setPourcentage(0.05);
+        com.setMontantTotal(commission);
+        com.setDatecommission(LocalDateTime.now());
+        DBconnection.enregistrerCommissionDB(com, idPaiement);
+        System.out.println("Paiement effectué avec succès.");
     }
 
     // function litser paiment

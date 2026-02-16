@@ -301,42 +301,36 @@ public class DBconnection {
         return factures;
     }
 
-    // Paiment
+    // Paiement
     public static int ajouterPaimentDB(Paiement paiement, int idFacture) {
-
-        String queryP = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture) VALUES (?, ?, ?, ?, ?)";
-        String queryUpdateF = "UPDATE facture SET status = true WHERE id = ?";
+        String insert = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture) VALUES (?, ?, ?, ?, ?)";
+        String update = "UPDATE facture SET status = true WHERE id = ?";
         int generatedId = -1;
+        try (Connection con = getConnection();
+             PreparedStatement p1 = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement p2 = con.prepareStatement(update)) {
+            p1.setDouble(1, paiement.getMontant());
+            p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
+            p1.setBoolean(3, paiement.isStatut());
+            p1.setDouble(4, paiement.getMontantCommision());
+            p1.setInt(5, idFacture);
+            p1.executeUpdate();
 
-        try {
-            Connection con = getConnection();
-            con.setAutoCommit(false);
-
-            PreparedStatement stmP = con.prepareStatement(queryP, Statement.RETURN_GENERATED_KEYS);
-            PreparedStatement stmF = con.prepareStatement(queryUpdateF);
-
-            stmP.setDouble(1, paiement.getMontant());
-            stmP.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
-            stmP.setBoolean(3, paiement.isStatut());
-            stmP.setDouble(4, paiement.getMontantCommision());
-            stmP.setInt(5, idFacture);
-            stmP.executeUpdate();
-
-            ResultSet rs = stmP.getGeneratedKeys();
-            if (rs.next()) {
-                generatedId = rs.getInt(1);
+            try (ResultSet rs = p1.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedId = rs.getInt(1);
+                }
             }
-
-            stmF.setInt(1, idFacture);
-            stmF.executeUpdate();
-            con.commit();
-            System.out.println("Paiement enregistré avec succès. ID: " + generatedId);
+            p2.setInt(1, idFacture);
+            p2.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout du paiement : " + e.getMessage());
+            System.out.println("Erreur paiement: " + e.getMessage());
         }
+
         return generatedId;
     }
+
 
     public static void supprimerPaimentDB(int id) {
         String requetSql = "DELETE FROM Paiement WHERE id = ?";
@@ -379,7 +373,6 @@ public class DBconnection {
             Connection con = getConnection();
             Statement stmq = con.createStatement();
             ResultSet res = stmq.executeQuery(requetSQl);
-
             while (res.next()) {
                 int idF = res.getInt("idFacture");
                 Facture f = getFactureById(idF);
@@ -398,26 +391,26 @@ public class DBconnection {
         }
         return paiements;
     }
-
-    // methode CommissionFinPay
+    // CommissionFinPay
     public static void enregistrerCommissionDB(CommissionFinPay com, int idPaiement) {
+
         String query = "INSERT INTO CommisionFinPay (pourcentage, montantTotal, datecommission, idPaiement) VALUES (?, ?, ?, ?)";
+
         try (Connection con = getConnection();
-                PreparedStatement st = con.prepareStatement(query)) {
+             PreparedStatement st = con.prepareStatement(query)) {
             st.setDouble(1, com.getPourcentage());
             st.setDouble(2, com.getMontantTotal());
             st.setTimestamp(3, Timestamp.valueOf(com.getDatecommission()));
             st.setInt(4, idPaiement);
-
             st.executeUpdate();
             System.out.println("Commission archivée avec succès.");
         } catch (SQLException e) {
-            System.out.println("Erreur archive commission : " + e.getMessage());
+            System.out.println("Erreur archive commission: " + e.getMessage());
         }
     }
 
     public static double calculerTotalCommssion() {
-        String query = "SELECT SUM(montantTotal) FROM CommissionFinPay";
+        String query = "SELECT SUM(montantTotal) FROM CommisionFinPay";
         try (Connection con = getConnection();
                 PreparedStatement st = con.prepareStatement(query);
                 ResultSet rs = st.executeQuery(query)) {
