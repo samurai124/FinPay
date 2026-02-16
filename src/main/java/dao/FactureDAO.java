@@ -142,4 +142,47 @@ public class FactureDAO {
         return factures;
     }
 
+
+    public static List<Facture> getFacturesByPrestataire(int idPrestataire) {
+        List<Facture> factures = new ArrayList<>();
+
+        String query = "SELECT * FROM facture WHERE idPrestataire = ?";
+
+        try {
+            Connection conn = DBconnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, idPrestataire);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Facture facture = new Facture(
+                rs.getInt("id"),
+                rs.getString("numero"),
+                rs.getDouble("montant"),
+                rs.getBoolean("statut"),
+                        ClientDAO.getClientById(rs.getInt("idClient")),
+                        PrestataireDAO.getPrestataireById(rs.getInt("idPrestataire"))
+                );
+
+
+                factures.add(facture);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return factures;
+    }
+
+
+
+
+
+
+
+
+
+
 }
