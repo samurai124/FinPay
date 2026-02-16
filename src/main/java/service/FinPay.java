@@ -318,7 +318,6 @@ public class FinPay {
         DBconnection.supprimerClientDB(id);
     }
     public void enregistrerPaiement() {
-
         List<Facture> factures = DBconnection.getFacturesDB();
 
         List<Facture> impayees = factures.stream()
@@ -329,7 +328,6 @@ public class FinPay {
             System.out.println("Aucune facture impayée.");
             return;
         }
-
         for (Facture f : impayees) {
             System.out.println("ID: " + f.getId() + " | Num: " + f.getNumero() + " | Montant: " + f.getMontant());
         }
@@ -367,13 +365,10 @@ public class FinPay {
             return;
         }
         System.out.println("_____________________________________________________________________________");
-        System.out.printf("| %-5s | %-10s | %-20s | %-10s | %-15s |\n", "ID", "Montant", "Date", "Statut",
-                "Commission");
+        System.out.printf("|ID| Montant | Date | Statut | Commission |\n");
         System.out.println("_____________________________________________________________________________");
         for (Paiement p : paiements) {
-            System.out.printf("| %-5d | %-10.2f | %-20s | %-10s | %-15.2f |\n",
-                    p.getId(), p.getMontant(), p.getDatePaiement(), p.isStatut() ? "Validé" : "Échec",
-                    p.getMontantCommision());
+            System.out.println("|"+ p.getId() + " |" + p.getMontant() + " | " + p.getDatePaiement() + " | " + p.isStatut()  +" | "+ p.getMontantCommision());
         }
         System.out.println("_____________________________________________________________________________");
 
@@ -399,9 +394,9 @@ public class FinPay {
     public void afficherStatistiquesFinPay() {
         double total = DBconnection.calculerTotalCommssion();
         System.out.println("---------------------------------------------------------");
-        System.out.println("********* RAPPORT FINANCIER DE LA PLATEFORME ************");
+        System.out.println("********* RAPPORT FINANCIER DE LA FINPAY ************");
         System.out.println("---------------------------------------------------------");
-        System.out.printf(" Total des commissions perçues : %.2f MAD\n", total);
+        System.out.println(" Total des commissions perçues :"+ total+ "MAD\n");
         System.out.println("----------------------------------------------------------");
     }
 
