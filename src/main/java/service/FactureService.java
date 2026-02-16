@@ -4,6 +4,7 @@ import model.Facture;
 import util.DBconnection;
 import util.ValidationDonnees;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import service.*;
@@ -30,7 +31,7 @@ public class FactureService {
         int idClient = ValidationDonnees.validateInts("id de client");
         prestataire.listerPrestataire();
         int idPrestataire = ValidationDonnees.validateInts("id de prestataire");
-        Facture facture = new Facture(numero, montant, false);
+        Facture facture = new Facture(numero, montant, false, LocalDateTime.now());
         ajouterFactureDB(facture, idClient, idPrestataire);
     }
 
