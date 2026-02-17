@@ -22,12 +22,12 @@ public class PaimentDAO {
              PreparedStatement p1 = con.prepareStatement(insert);
              PreparedStatement p3=con.prepareStatement(selectId);
              PreparedStatement p2 = con.prepareStatement(update)) {
-            p1.setDouble(1, paiement.getMontant());
-            p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
-            p1.setBoolean(3, paiement.isStatut());
-            p1.setDouble(4, paiement.getMontantCommision());
-            p1.setInt(5, idFacture);
-            p1.executeUpdate();
+             p1.setDouble(1, paiement.getMontant());
+             p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
+             p1.setBoolean(3, paiement.isStatut());
+             p1.setDouble(4, paiement.getMontantCommision());
+             p1.setInt(5, idFacture);
+             p1.executeUpdate();
 
             ResultSet rs = p3.executeQuery();
             if (rs.next()) {
