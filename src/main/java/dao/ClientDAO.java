@@ -89,7 +89,6 @@ public class ClientDAO {
         }
         return clients;
     }
-
     public static Client getClientById(int id) {
         String query = "SELECT id, nom,solde FROM client WHERE id = ?";
         try {
