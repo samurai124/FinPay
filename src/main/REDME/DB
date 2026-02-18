@@ -18,6 +18,7 @@ CREATE TABLE facture(
     id INT PRIMARY KEY AUTO_INCREMENT,
     numero VARCHAR(100) UNIQUE,
     montant FLOAT,
+    date DATETIME,
     status BOOLEAN DEFAULT FALSE,
     idClient INT,
     idPrestataire INT,
@@ -81,3 +82,13 @@ INSERT INTO admin(nom, password) VALUES
 ("Imane", 1000),
 ("Sofiane", 2000),
 ("Loubna", 3000);
+
+
+// i added solde to client table :
+ALTER TABLE client
+ADD COLUMN solde FLOAT;
+
+UPDATE client SET solde = 500.00 WHERE id = 1;
+UPDATE client SET solde = 1250.75 WHERE id = 2;
+UPDATE client SET solde = 0.00 WHERE id = 3;
+UPDATE client SET solde = 320.50 WHERE id = 4;

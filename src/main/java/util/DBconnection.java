@@ -10,10 +10,9 @@ public class DBconnection {
 
     private static String URL = "jdbc:mysql://localhost:3306/finpay";
     private static String USER = "root";
-    private static String PASSWORD = "2005085";
+    private static String PASSWORD = "1234";
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
-
 }

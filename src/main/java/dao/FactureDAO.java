@@ -3,6 +3,7 @@ package dao;
 import model.Client;
 import model.Facture;
 import model.Prestataire;
+import service.FacturePDF;
 import util.DBconnection;
 
 import java.sql.Connection;
@@ -31,6 +32,7 @@ public class FactureDAO {
             statment.setInt(5, idPrestataire);
             statment.executeUpdate();
             System.out.println("Facture inséré avec succès");
+            FacturePDF.facturepdf(new Facture(facture.getNumero(),facture.getMontant(),facture.getStatut(),ClientDAO.getClientById(idClient),PrestataireDAO.getPrestataireById(idPrestataire)));
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println("Échec de l'insertion du facture");
