@@ -105,7 +105,7 @@ public class Menu {
 
             choix = ValidationDonnees.validateInts("votre choix");
             switch (choix) {
-                case 1 -> FactureService.listerFactureParClient(client);
+                case 1 -> new FactureService().listerFactureParClient(client);
                 case 2 -> paimentService.enregistrerPaiement(client);
                 case 3 -> paimentService.listerPaiement(client);
                 case 4 -> System.out.println("Retour au menu principal...");
@@ -128,7 +128,7 @@ public class Menu {
                 case 2 -> factureService.modifierFacture(prestataire);
                 case 3 -> factureService.supprimerFacture(prestataire);
                 case 4 -> factureService.listerFacture(prestataire);
-                case 5 -> factureService.filterParStatus();
+                case 5 -> factureService.filterParStatus(prestataire);
                 case 6 -> System.out.println("Retour au menu prestataire...");
                 default -> System.out.println("Entrez un nombre entre 1 et 6");
             }

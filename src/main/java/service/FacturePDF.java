@@ -7,44 +7,58 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import model.Facture;
+import java.time.format.DateTimeFormatter;
 
 public class FacturePDF {
-    public static void facturepdf(Facture facture){
+    public static void facturepdf(Facture facture) {
         try {
 
-            PdfWriter writer = new PdfWriter("facture.pdf");
+            String fileName = "facture_" + facture.getNumero() + ".pdf";
+            PdfWriter writer = new PdfWriter(fileName);
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
 
-            String logoPath = "im1.png";
-            Image logo = new Image(ImageDataFactory.create(logoPath));
 
-            logo.scaleToFit(100, 100);// 150x150 pixels max
-            logo.setMarginRight(50);
-
-            document.add(logo);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
 
-            document.add(new Paragraph("FinPin").setBold());
-            document.add(new Paragraph(("- La facture N° : ") + facture.getNumero()));
-            document.add(new Paragraph("---------------------les informations du client --------------------").setBold());
-            document.add(new Paragraph("- La facture du client : " + facture.getClient().getNom()));
-            document.add(new Paragraph("- Id client : " + facture.getClient().getId()));
-            document.add(new Paragraph("--------------------- les informations du prestataire --------------------").setBold());
-            document.add(new Paragraph("- Le prestataire : " + facture.getPrestataire().getNomEntreprise()));
-            document.add(new Paragraph("- L'email du prestataire : " + facture.getPrestataire().getEmail()));
-            document.add(new Paragraph("--------------------- les informations de la facture  --------------------").setBold());
-            document.add(new Paragraph("- La date de la facture : " + facture.getDate()));
-            document.add(new Paragraph(("- Le montant total de la facture est: " + facture.getMontant()) + " MAD"));
-//            document.add(new Paragraph(("- La commition appliquée : " +  ));
-            document.add(new Paragraph("- Le statut de la facture : " + facture.getStatut()));
+            try {
+                String logoPath = "im1.png";
+                Image logo = new Image(ImageDataFactory.create(logoPath));
+                logo.scaleToFit(100, 100);
+                document.add(logo);
+            } catch (Exception e) {
+                System.out.println("Logo non trouvé, génération sans image.");
+            }
 
+            document.add(new Paragraph("FinPay").setBold().setFontSize(20));
+            document.add(new Paragraph("- La facture N° : " + facture.getNumero()));
+
+            document.add(new Paragraph("\n--- Informations du Client ---").setBold());
+            document.add(new Paragraph("- Nom : " + facture.getClient().getNom()));
+            document.add(new Paragraph("- ID : " + facture.getClient().getId()));
+
+            document.add(new Paragraph("\n--- Informations du Prestataire ---").setBold());
+            document.add(new Paragraph("- Entreprise : " + facture.getPrestataire().getNomEntreprise()));
+            document.add(new Paragraph("- Email : " + facture.getPrestataire().getEmail()));
+
+            document.add(new Paragraph("\n--- Détails Financiers ---").setBold());
+            document.add(new Paragraph("- Date : " + (facture.getDate() != null ? facture.getDate().format(formatter) : "N/A")));
+            document.add(new Paragraph("- Montant HT : " + facture.getMontant() + " MAD"));
+
+            double commission = facture.getMontant() * 0.02;
+            double total = facture.getMontant() + commission;
+            document.add(new Paragraph("- Commission (2%) : " + commission + " MAD"));
+            document.add(new Paragraph("- Total à payer : " + total + " MAD").setBold());
+
+            String statusText = facture.getStatut() ? "Payée" : "Non payée";
+            document.add(new Paragraph("- Statut : " + statusText));
 
             document.close();
-            System.out.println("PDF avec logo créé!");
+            System.out.println("Facture PDF '" + fileName + "' créée avec succès !");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Erreur lors de la création du PDF : " + e.getMessage());
         }
     }
 }

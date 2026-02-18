@@ -56,7 +56,7 @@ public class CommissionFinPayDAO {
 
                 Facture facture = new Facture(res.getInt("id"), res.getString("numero"), res.getFloat("montant"),
                         res.getBoolean("status"), getClientById(res.getInt("idClient")),
-                        getPrestataireById(res.getInt("idPrestataire")));
+                        getPrestataireById(res.getInt("idPrestataire")),res.getTimestamp("date").toLocalDateTime());
                 factures.add(facture);
             }
 
