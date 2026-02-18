@@ -7,20 +7,26 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import model.Facture;
+import java.io.File;
 import java.time.format.DateTimeFormatter;
 
 public class FacturePDF {
     public static void facturepdf(Facture facture) {
         try {
+            String folderName = "pdfs";
+            File directory = new File(folderName);
 
-            String fileName = "facture_" + facture.getNumero() + ".pdf";
-            PdfWriter writer = new PdfWriter(fileName);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            String fullPath = folderName + File.separator + "facture_" + facture.getNumero() + ".pdf";
+
+            PdfWriter writer = new PdfWriter(fullPath);
             PdfDocument pdf = new PdfDocument(writer);
             Document document = new Document(pdf);
 
-
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
 
             try {
                 String logoPath = "im1.png";
@@ -28,7 +34,7 @@ public class FacturePDF {
                 logo.scaleToFit(100, 100);
                 document.add(logo);
             } catch (Exception e) {
-                System.out.println("Logo non trouvé, génération sans image.");
+                System.out.println("Logo non trouvé.");
             }
 
             document.add(new Paragraph("FinPay").setBold().setFontSize(20));
@@ -55,10 +61,10 @@ public class FacturePDF {
             document.add(new Paragraph("- Statut : " + statusText));
 
             document.close();
-            System.out.println("Facture PDF '" + fileName + "' créée avec succès !");
+            System.out.println("Succès ! Facture disponible ici : " + directory.getAbsolutePath());
 
         } catch (Exception e) {
-            System.err.println("Erreur lors de la création du PDF : " + e.getMessage());
+            System.err.println("Erreur : " + e.getMessage());
         }
     }
 }
