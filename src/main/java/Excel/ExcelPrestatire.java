@@ -27,8 +27,6 @@ public class ExcelPrestatire {
         double totalNonPaye=0;
         int rowN=1;
 
-
-
     Workbook  workbook = new HSSFWorkbook();
     Sheet sheet = workbook.createSheet("Factures");
     Row header = sheet.createRow(0);//header
