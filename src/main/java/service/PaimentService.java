@@ -19,11 +19,6 @@ public class PaimentService {
 
     public void enregistrerPaiement(Client client) {
         List<Facture> factures = getFacturesDB().stream().filter(element -> element.getClient().getId() == client.getId()).toList();
-
-        if (factures.isEmpty()){
-            System.out.printf("facture khawiin");
-        }
-
         List<Facture> impayees = factures.stream().filter(f ->!f.getStatut()).toList();
 
         if (impayees.isEmpty()) {
@@ -34,23 +29,35 @@ public class PaimentService {
             System.out.println("ID: " + f.getId() + " | Num: " + f.getNumero() + " | Montant: " + f.getMontant());
         }
         int id = ValidationDonnees.validateInts("ID facture:");
-        double mantant=ValidationDonnees.validateFloats("Enter le montat a payee: ");
+        double montantSaisi = ValidationDonnees.validateFloats("Entrez le montant à payer: ");
+        System.out.println("Choisissez le mode de paiement :");
+        System.out.println("1- Espèces | 2- Carte | 3- Virement");
+        int choixMode = ValidationDonnees.validateInts("Choix:");
+        String mode = switch (choixMode) {
+            case 1 -> "Espèces";
+            case 2 -> "Carte";
+            case 3 -> "Virement";
+            default -> "Autre";
+        };
+
         Facture facture = impayees.stream().filter(f -> f.getId() == id).findFirst().orElse(null);
         if (facture == null) {
             System.out.println("ID invalide !");
             return;
         }
-        double montantimpyee=facture.getMontant() - mantant;
-        double commission = facture.getMontant() * 0.02;
-        Paiement paiement = new Paiement(0, montantimpyee, LocalDateTime.now(), true, commission, facture);
+
+        double commission = montantSaisi * 0.05;
+
+        Paiement paiement = new Paiement(0, montantSaisi, LocalDateTime.now(), true, commission,mode ,facture);
+        paiement.setModePaiement(mode);
+
         int idPaiement = ajouterPaimentDB(paiement, facture.getId());
 
         if (idPaiement > 0) {
             paiement.setId(idPaiement);
             PaiementPdf.genererRecuePaiement(paiement);
-
         } else {
-            System.out.println("Erreur lors de l'enregistrement du paiement !");
+            System.out.println("Erreur lors de l'enregistrement !");
             return;
         }
         CommissionFinPay com = new CommissionFinPay();
