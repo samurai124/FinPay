@@ -70,7 +70,7 @@ public class Menu {
         do {
             System.out.println("------------------------------------------------------");
             System.out.println("--- ESPACE PRESTATAIRE : " + prestataire.getNomEntreprise() + " ---");
-            System.out.println("1- Gérer les clients\n2- Gérer vos factures\n3- Statistiques\n4- Retour");
+            System.out.println("1- Gérer les clients\n2- Gérer vos factures\n3- Statistiques\n4- générer le fichier excel facture par prestatire \n5 Retour");
             System.out.println("------------------------------------------------------");
             choix = ValidationDonnees.validateInts("votre choix");
             switch (choix) {
@@ -80,10 +80,11 @@ public class Menu {
                     Statistiques.afficherStatistiquesGlobales();
                     Statistiques.afficherHistoriqueFinancier();
                 }
-                case 4 -> System.out.println("Retour au menu principal...");
-                default -> System.out.println("Entrez un nombre entre 1 et 4");
+                case 4 -> Excel.ExcelPrestatire.afficherFacturePrestatire();
+                case 5 -> System.out.println("Retour au menu principal...");
+                default -> System.out.println("Entrez un nombre entre 1 et 5");
             }
-        } while (choix != 4);
+        } while (choix != 5);
     }
 
     public void clientMenu() {
