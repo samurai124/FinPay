@@ -42,7 +42,7 @@ public class ExcelPrestatire {
         for(Facture f:factures){
             Row row = sheet.createRow(rowN++);
             row.createCell(0).setCellValue(f.getId());
-            row.createCell(1).setCellValue(f.getDate());
+            row.createCell(1).setCellValue(f.getDate().toString());
             row.createCell(2).setCellValue(f.getClient().getNom());
             row.createCell(3).setCellValue(f.getMontant());
             row.createCell(4).setCellValue(f.getStatut()?"payée":"non payée");
