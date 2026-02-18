@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDateTime;
+
 public class Facture {
     private int id ;
     private String numero;
@@ -7,20 +9,31 @@ public class Facture {
     private boolean statut;
     private Prestataire prestataire;
     private Client client;
+    private LocalDateTime date ;
 
     public Facture(String numero, double montant,boolean status){
         this.numero = numero;
         this.montant = montant;
         this.statut = status;
+        this.date = LocalDateTime.now();
     }
 
-    public Facture(int id ,String numero, double montant,boolean status,Client client,Prestataire prestataire){
+    public Facture(int id ,String numero, double montant,boolean status,Client client,Prestataire prestataire,LocalDateTime date){
         this.id = id;
         this.numero = numero;
         this.montant = montant;
         this.statut = status;
         this.client=client;
         this.prestataire=prestataire;
+        this.date = date;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public int getId() {

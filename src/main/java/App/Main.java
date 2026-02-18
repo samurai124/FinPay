@@ -13,6 +13,9 @@ import static dao.PrestataireDAO.*;
 
 public class Main {
      static void main(String[] args){
+
+         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "off");
+
          Menu menu = new Menu();
          menu.menuPrencipal();
     }
