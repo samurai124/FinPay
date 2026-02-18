@@ -18,6 +18,7 @@ CREATE TABLE facture(
     id INT PRIMARY KEY AUTO_INCREMENT,
     numero VARCHAR(100) UNIQUE,
     montant FLOAT,
+    date DATETIME,
     status BOOLEAN DEFAULT FALSE,
     idClient INT,
     idPrestataire INT,

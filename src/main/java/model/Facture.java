@@ -55,6 +55,7 @@ public class Facture {
         this.statut = statut;
     }
     public Boolean getStatut() {
+
         return statut;
     }
 

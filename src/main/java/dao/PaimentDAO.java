@@ -16,22 +16,24 @@ public class PaimentDAO {
     public static int ajouterPaimentDB(Paiement paiement, int idFacture) {
         String insert = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture) VALUES (?, ?, ?, ?, ?)";
         String update = "UPDATE facture SET status = true WHERE id = ?";
-        int generatedId = -1;
+        String selectId = "SELECT MAX(id) FROM paiement";
+        int idPaiement = -1;
         try (Connection con = getConnection();
-             PreparedStatement p1 = con.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement p1 = con.prepareStatement(insert);
+             PreparedStatement p3=con.prepareStatement(selectId);
              PreparedStatement p2 = con.prepareStatement(update)) {
-            p1.setDouble(1, paiement.getMontant());
-            p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
-            p1.setBoolean(3, paiement.isStatut());
-            p1.setDouble(4, paiement.getMontantCommision());
-            p1.setInt(5, idFacture);
-            p1.executeUpdate();
+             p1.setDouble(1, paiement.getMontant());
+             p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
+             p1.setBoolean(3, paiement.isStatut());
+             p1.setDouble(4, paiement.getMontantCommision());
+             p1.setInt(5, idFacture);
+             p1.executeUpdate();
 
-            try (ResultSet rs = p1.getGeneratedKeys()) {
-                if (rs.next()) {
-                    generatedId = rs.getInt(1);
-                }
+            ResultSet rs = p3.executeQuery();
+            if (rs.next()) {
+                idPaiement = rs.getInt(1);
             }
+
             p2.setInt(1, idFacture);
             p2.executeUpdate();
 
@@ -39,7 +41,7 @@ public class PaimentDAO {
             System.out.println("Erreur paiement: " + e.getMessage());
         }
 
-        return generatedId;
+        return idPaiement;
     }
 
 
