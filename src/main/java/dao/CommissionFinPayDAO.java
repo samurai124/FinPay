@@ -39,7 +39,7 @@ public class CommissionFinPayDAO {
                 return rs.getDouble(1);
         } catch (SQLException e) {
             System.out.println("Erreur :" + e.getMessage());
-            ;
+
         }
         return 0.0;
     }

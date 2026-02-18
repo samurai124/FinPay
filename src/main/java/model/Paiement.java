@@ -8,15 +8,25 @@ public class Paiement {
     private LocalDateTime datePaiement;
     private boolean statut;
     private double montantCommision;
+    private  String modePaiement;
     private Facture facture;
 
-    public Paiement(int id, double montant, LocalDateTime datePaiement, boolean statut, double montantCommision, Facture facture) {
+    public Paiement(int id, double montant, LocalDateTime datePaiement, boolean statut, double montantCommision,String modePaiement ,Facture facture) {
         this.id = id;
         this.montant = montant;
         this.datePaiement = datePaiement;
         this.statut = statut;
         this.montantCommision = montantCommision;
+        this.modePaiement=modePaiement;
         this.facture = facture;
+    }
+
+    public String getModePaiement() {
+        return modePaiement;
+    }
+
+    public void setModePaiement(String modePaiement) {
+        this.modePaiement = modePaiement;
     }
 
     public int getId() {

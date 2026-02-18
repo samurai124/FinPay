@@ -4,30 +4,40 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.properties.TextAlignment;
 import model.Paiement;
 
 import javax.print.attribute.standard.PageRanges;
+import java.io.File;
 import java.time.format.DateTimeFormatter;
-
 public class PaiementPdf {
     public static void genererRecuePaiement(Paiement paiement){
-      String recuePaiement="C:/Users/soufiane/Desktop/pdf/recupaiement "+paiement.getId()+".pdf";
-      try {
+//      String recuePaiement="C:/Users/soufiane/Desktop/pdf/recupaiement "+paiement.getId()+".pdf";
+        String rootPath = System.getProperty("user.dir");
+        String folderName = rootPath + File.separator + "pdfs";
+
+        File directory = new File(folderName);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        String recuePaiement = folderName + File.separator + "recu_paiement_" + paiement.getId() + ".pdf";
+        try {
           PdfWriter writer=new PdfWriter(recuePaiement);
           PdfDocument pdf=new PdfDocument(writer);
           Document document=new Document(pdf);
            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-          document.add(new Paragraph("----------------- Recu de Paiement -----------------------"));
-          document.add(new Paragraph("Numéro du paiement : "+paiement.getId()));
-          document.add(new Paragraph("Numéro de la facture: "+paiement.getFacture().getNumero()));
-          document.add(new Paragraph("Date du paiement: "+paiement.getDatePaiement().format(formatter)));
-          document.add(new Paragraph("Méthode de paiement : Espèces / Carte / Autre"));
-          document.add(new Paragraph("le montant " + paiement.getMontant()));
+          document.add(new Paragraph("----------------- Recu de Paiement -----------------------").setTextAlignment(TextAlignment.CENTER)
+                  .setItalic());
+          document.add(new Paragraph(" Numéro du paiement : "+paiement.getId()).setTextAlignment(TextAlignment.CENTER).setItalic());
+          document.add(new Paragraph(" Numéro de la facture: "+paiement.getFacture().getNumero()).setTextAlignment(TextAlignment.CENTER).setItalic());
+          document.add(new Paragraph(" Date du paiement: "+paiement.getDatePaiement().format(formatter)).setTextAlignment(TextAlignment.CENTER).setItalic());
+          document.add(new Paragraph(" Méthode de paiement: "+paiement.getModePaiement()).setTextAlignment(TextAlignment.CENTER).setItalic());
+          document.add(new Paragraph(" le montant " + paiement.getMontant()+ " MAD").setTextAlignment(TextAlignment.CENTER).setItalic());
           double reste=paiement.getFacture().getMontant() - paiement.getMontant();
-          document.add(new Paragraph("Reste à payer: "+ reste));
-
-          document.add(new Paragraph("----------------------------------------------------------"));
+          document.add(new Paragraph(" Reste à payer : " + (reste > 0 ? reste : "0.00") + " MAD").setTextAlignment(TextAlignment.CENTER).setItalic());
+          document.add(new Paragraph("-----------------------------------------------------------------").setTextAlignment(TextAlignment.CENTER).setItalic());
+            document.add(new Paragraph("\nMerci pour votre paiement.").setTextAlignment(TextAlignment.CENTER).setItalic());
           document.close();
 
           System.out.println("Recu PDF généré avec succès : " + recuePaiement);

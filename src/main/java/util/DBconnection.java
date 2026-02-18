@@ -8,7 +8,7 @@ import java.util.List;
 
 public class DBconnection {
 
-    private static String URL = "jdbc:mysql://localhost:3306/finpay";
+    private static String URL = "jdbc:mysql://localhost:3307/finpay";
     private static String USER = "root";
     private static String PASSWORD = "";
 
