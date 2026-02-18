@@ -12,9 +12,9 @@ public class ClientService {
     // fonction pour ajouter un client
     public void ajouterClient() {
         String nom = ValidationDonnees.validateString("nom du client");
-        Client client = new Client(nom);
+        float solde = ValidationDonnees.validateFloats("solde");
+        Client client = new Client(nom,solde);
         ajouterClientDB(client);
-
     }
 
     // founction pour lister les clients
@@ -25,11 +25,14 @@ public class ClientService {
             return;
         }
         System.out.println("________________________________________________________");
-        System.out.printf("| %-15s | %-15s |\n",
-                "ID", "Nom");
+        System.out.printf("| %-15s | %-15s | %-15s |\n",
+                "ID", "Nom" , "Solde");
         System.out.println("________________________________________________________");
-        clients.forEach(c -> System.out.printf("| %-15d | %-15s |\n",
-                c.getId(), c.getNom()));
+        clients.forEach(c -> System.out.printf("| %-15d | %-15s | %-15.2f |\n",
+                c.getId(),
+                c.getNom(),
+                c.getSolde())
+                );
         System.out.println("________________________________________________________");
     }
 
@@ -46,15 +49,15 @@ public class ClientService {
         System.out.println("________________________________________________________");
         System.out.println("|            tu ne peux pas modifier l’id               |");
         System.out.println("________________________________________________________");
-        System.out.printf("| %-15s | %-15s |\n",
-                "ID", "Nom");
+        System.out.printf("| %-15s | %-15s | %-15s |\n",
+                "ID", "Nom" ,"Solde");
         System.out.println("________________________________________________________");
-        System.out.printf("| %-15d | %-15s |\n",
-                client.getId(), client.getNom());
+        System.out.printf("| %-15d | %-15s | %-15.2f |\n",
+                client.getId(), client.getNom() , client.getSolde());
         System.out.println("________________________________________________________");
-        String nom = ValidationDonnees.validateString("le champ tu veux modifier");
-        String nvNom = ValidationDonnees.validateString("la nouvelle valeur");
-        midifierClientDB(id, nom, nvNom);
+        String champ = ValidationDonnees.validateString("le champ tu veux modifier").toLowerCase();
+        String nValeur = ValidationDonnees.validateString("la nouvelle valeur").toLowerCase();
+        midifierClientDB(id, champ, nValeur);
 
     }
 
@@ -78,13 +81,15 @@ public class ClientService {
             System.out.println("Le prestataire avec l'id : " + id + "n'exist pas");
             return;
         }
-        System.out.println("_______________________________");
-        System.out.printf("| %-10s | %-10s |\n",
-                "ID", "Nom");
-        System.out.println("_______________________________");
-        System.out.printf("| %-10d | %-10s |\n",
-                getClientById(id).getId(), getClientById(id).getNom());
-        System.out.println("_______________________________");
+        System.out.println("_________________________________________");
+        System.out.printf("| %-10s | %-10s | %-10s |\n",
+                "ID", "Nom","Solde");
+        System.out.println("_________________________________________");
+        System.out.printf("| %-10d | %-10s | %-10.2f |\n",
+                getClientById(id).getId(),
+                getClientById(id).getNom(),
+                getClientById(id).getSolde());
+        System.out.println("_________________________________________");
     }
 
 }

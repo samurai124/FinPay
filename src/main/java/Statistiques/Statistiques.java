@@ -2,7 +2,6 @@ package Statistiques;
 
 import model.Facture;
 import model.Paiement;
-import util.DBconnection;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;

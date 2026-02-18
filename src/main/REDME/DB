@@ -82,3 +82,31 @@ INSERT INTO admin(nom, password) VALUES
 ("Imane", 1000),
 ("Sofiane", 2000),
 ("Loubna", 3000);
+
+
+// i added solde to client table :
+ALTER TABLE client
+ADD COLUMN solde FLOAT;
+
+UPDATE client SET solde = 500.00 WHERE id = 1;
+UPDATE client SET solde = 1250.75 WHERE id = 2;
+UPDATE client SET solde = 0.00 WHERE id = 3;
+UPDATE client SET solde = 320.50 WHERE id = 4;
+
+
+
+// i added the date column to the facture table
+
+ALTER TABLE facture
+ADD COLUMN date DATETIME;
+
+
+UPDATE facture SET date = "2026-02-18 12:10:00" WHERE id = 1;
+UPDATE facture SET date = "2026-02-18 10:10:00" WHERE id = 2;
+UPDATE facture SET date = "2026-02-18 12:10:00" WHERE id = 3;
+UPDATE facture SET date = "2026-02-18 12:10:00" WHERE id = 4;
+UPDATE facture SET date = "2026-02-18 12:10:00" WHERE id = 5;
+UPDATE facture SET date = "2026-02-18 12:10:00" WHERE id = 6;
+UPDATE facture SET date = "2026-02-18 12:10:00" WHERE id = 7;
+UPDATE facture SET date = "2026-02-18 12:10:00" WHERE id = 8;
+UPDATE facture SET date = "2026-02-18 12:10:00" WHERE id = 9;

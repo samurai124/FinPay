@@ -7,33 +7,33 @@ public class Facture {
     private String numero;
     private double montant;
     private boolean statut;
-    private LocalDateTime date;
     private Prestataire prestataire;
     private Client client;
+    private LocalDateTime date ;
 
-    public Facture(String numero, double montant,boolean status, LocalDateTime date){
+    public Facture(String numero, double montant,boolean status){
         this.numero = numero;
         this.montant = montant;
         this.statut = status;
+        this.date = LocalDateTime.now();
+    }
+
+    public Facture(int id ,String numero, double montant,boolean status,Client client,Prestataire prestataire,LocalDateTime date){
+        this.id = id;
+        this.numero = numero;
+        this.montant = montant;
+        this.statut = status;
+        this.client=client;
+        this.prestataire=prestataire;
         this.date = date;
     }
 
-    public Facture(int id ,String numero, double montant,boolean status,Client client,Prestataire prestataire){
-        this.id = id;
-        this.numero = numero;
-        this.montant = montant;
-        this.statut = status;
-        this.client=client;
-        this.prestataire=prestataire;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public Facture(String numero, double montant,boolean status,Client client,Prestataire prestataire){
-        this.id = id;
-        this.numero = numero;
-        this.montant = montant;
-        this.statut = status;
-        this.client=client;
-        this.prestataire=prestataire;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public int getId() {
@@ -65,10 +65,11 @@ public class Facture {
     }
 
     public void setStatut(boolean statut) {
-    this.statut = statut;
+        this.statut = statut;
     }
     public Boolean getStatut() {
-return statut;
+
+        return statut;
     }
 
     public Prestataire getPrestataire() {
@@ -85,13 +86,5 @@ return statut;
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
     }
 }
