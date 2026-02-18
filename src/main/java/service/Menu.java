@@ -6,6 +6,9 @@ import model.Client;
 import model.Prestataire;
 import util.ValidationDonnees;
 
+import static Excel.ExcelAdmin.exelData;
+import static Excel.ExcelAdmin.exportFacturesImpayees;
+
 public class Menu {
 
     private static ClientService clientService = new ClientService();
@@ -43,7 +46,7 @@ public class Menu {
         do {
             System.out.println("------------------------------------------------------");
             System.out.println("--- ESPACE ADMIN : " + admin.getNom() + " ---");
-            System.out.println("1- Gérer les prestataires\n2- Gérer les clients\n3- Statistiques\n4- Retour");
+            System.out.println("1- Gérer les prestataires\n2- Gérer les clients\n3- Statistiques\n4- Export Rapport Global Mensuel\n5- Export des Factures Impayées\n6- Retour");
             System.out.println("------------------------------------------------------");
             choix = ValidationDonnees.validateInts("votre choix");
             switch (choix) {
@@ -53,10 +56,12 @@ public class Menu {
                     Statistiques.afficherStatistiquesGlobales();
                     Statistiques.afficherHistoriqueFinancier();
                 }
-                case 4 -> System.out.println("Retour au menu principal...");
-                default -> System.out.println("Entrez un nombre entre 1 et 4");
+                case 4 -> exelData() ;
+                case 5 -> exportFacturesImpayees();
+                case 6 -> System.out.println("Retour au menu principal...");
+                default -> System.out.println("Entrez un nombre entre 1 et 5");
             }
-        } while (choix != 4);
+        } while (choix != 6);
     }
 
     public void prestataireMenu() {
