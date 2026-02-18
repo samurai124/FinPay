@@ -56,6 +56,7 @@ public class PaimentService {
         System.out.println("Paiement effectué avec succès.");
     }
 
+
     // function litser paiment
     public void listerPaiement() {
         List<Paiement> paiements = getPaimentDB();
