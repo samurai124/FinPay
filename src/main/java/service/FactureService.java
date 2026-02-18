@@ -1,6 +1,8 @@
 package service;
 
+import model.Client;
 import model.Facture;
+import model.Prestataire;
 import util.DBconnection;
 import util.ValidationDonnees;
 
@@ -23,19 +25,17 @@ public class FactureService {
 
 
 
-    public void ajouterFacture() {
+    public void ajouterFacture(Prestataire prestataire) {
         String numero = ValidationDonnees.validateString("le numéro de la facture");
         float montant = ValidationDonnees.validateFloats("montant de la facture");
         client.listerClient();
         int idClient = ValidationDonnees.validateInts("id de client");
-        prestataire.listerPrestataire();
-        int idPrestataire = ValidationDonnees.validateInts("id de prestataire");
         Facture facture = new Facture(numero, montant, false);
-        ajouterFactureDB(facture, idClient, idPrestataire);
+        ajouterFactureDB(facture, idClient, prestataire.getId());
     }
 
-    public void listerFacture() {
-        List<Facture> factures = getFacturesDB();
+    public void listerFacture(Prestataire prestataire) {
+        List<Facture> factures = getFacturesDB().stream().filter(element -> element.getPrestataire().getId() == prestataire.getId()).toList();
         if (factures.isEmpty()) {
             System.out.println("Aucune facture trouvé dans base de donnée");
             return;
@@ -104,8 +104,8 @@ public class FactureService {
         System.out.println("_________________________________________________________________________________________");
     }
 
-    public void modifierFacture() {
-        listerFacture();
+    public void modifierFacture(Prestataire prestataire) {
+        listerFacture(prestataire);
         int id = ValidationDonnees.validateInts("l'id du facture tu veux modifier ");
         Facture facture = getFactureById(id);
         if (facture == null) {
@@ -159,8 +159,8 @@ public class FactureService {
     }
 
     // function pour supprimer une facture
-    public void supprimerFacture() {
-        listerFacture();
+    public void supprimerFacture(Prestataire prestataire) {
+        listerFacture(prestataire);
         int id = ValidationDonnees.validateInts("facture id tu veux supprimer ");
         Facture facture = getFactureById(id);
         if (facture == null) {
@@ -168,6 +168,26 @@ public class FactureService {
             return;
         }
         supprimerClientDB(id);
+    }
+
+
+    public static void listerFactureParClient(Client client) {
+        List<Facture> factures = getFacturesDB().stream().filter(element -> element.getClient().getId() == client.getId()).toList();
+        if (factures.isEmpty()) {
+            System.out.println("Aucune facture trouvé dans base de donnée");
+            return;
+        }
+        System.out.println(
+                "________________________________________________________________________________________________________________");
+        System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
+                "ID", "Numero", "Montant", "statut", "nom client", "nom prestataire");
+        System.out.println(
+                "________________________________________________________________________________________________________________");
+        factures.forEach(f -> System.out.printf("| %-15d | %-15s | %-15.2f | %-15b | %-15s | %-15s |\n",
+                f.getId(), f.getNumero(), f.getMontant(), f.getStatut(), f.getClient().getNom(),
+                f.getPrestataire().getNomEntreprise()));
+        System.out.println(
+                "________________________________________________________________________________________________________________");
     }
 
 
