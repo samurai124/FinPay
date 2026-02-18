@@ -1,5 +1,6 @@
 package service;
 
+import model.Client;
 import model.CommissionFinPay;
 import model.Facture;
 import model.Paiement;
@@ -16,12 +17,14 @@ import static dao.PaimentDAO.*;
 public class PaimentService {
     private ClientService  client = new ClientService();
 
-    public void enregistrerPaiement() {
-        List<Facture> factures =getFacturesDB();
+    public void enregistrerPaiement(Client client) {
+        List<Facture> factures = getFacturesDB().stream().filter(element -> element.getClient().getId() == client.getId()).toList();
 
-        List<Facture> impayees = factures.stream()
-                .filter(f -> !f.getStatut())
-                .toList();
+        if (factures.isEmpty()){
+            System.out.printf("facture khawiin");
+        }
+
+        List<Facture> impayees = factures.stream().filter(f ->!f.getStatut()).toList();
 
         if (impayees.isEmpty()) {
             System.out.println("Aucune facture impayée.");
@@ -30,22 +33,24 @@ public class PaimentService {
         for (Facture f : impayees) {
             System.out.println("ID: " + f.getId() + " | Num: " + f.getNumero() + " | Montant: " + f.getMontant());
         }
-
         int id = ValidationDonnees.validateInts("ID facture:");
-
+        double mantant=ValidationDonnees.validateFloats("Enter le montat a payee: ");
         Facture facture = impayees.stream().filter(f -> f.getId() == id).findFirst().orElse(null);
-
         if (facture == null) {
             System.out.println("ID invalide !");
             return;
         }
+        double montantimpyee=facture.getMontant() - mantant;
         double commission = facture.getMontant() * 0.02;
-        Paiement paiement = new Paiement(0, facture.getMontant(), LocalDateTime.now(), true, commission, facture);
-
+        Paiement paiement = new Paiement(0, montantimpyee, LocalDateTime.now(), true, commission, facture);
         int idPaiement = ajouterPaimentDB(paiement, facture.getId());
 
-        if (idPaiement == -1) {
-            System.out.println("Erreur: Impossible d'enregistrer le paiement.");
+        if (idPaiement > 0) {
+            paiement.setId(idPaiement);
+            PaiementPdf.genererRecuePaiement(paiement);
+
+        } else {
+            System.out.println("Erreur lors de l'enregistrement du paiement !");
             return;
         }
         CommissionFinPay com = new CommissionFinPay();
@@ -57,8 +62,8 @@ public class PaimentService {
     }
 
     // function litser paiment
-    public void listerPaiement() {
-        List<Paiement> paiements = getPaimentDB();
+    public void listerPaiement(Client client) {
+        List<Paiement> paiements = getPaimentDB().stream().filter(element -> element.getFacture().getClient().getId() == client.getId() ).toList();
         if (paiements.isEmpty()) {
             System.out.println("Aucune paiment trouvé dans base de donnée");
             return;
@@ -72,18 +77,17 @@ public class PaimentService {
         System.out.println("_____________________________________________________________________________");
 
     }
-
     // function supprimer paiement
-    public void supprimerPaiement() {
-        listerPaiement();
+    public void supprimerPaiement(Client client) {
+        listerPaiement(client);
         int id = ValidationDonnees.validateInts("l'ID du paiement à supprimer");
         supprimerPaimentDB(id);
 
     }
 
     // function modifier Paiement
-    public void modifierPaiement() {
-        listerPaiement();
+    public void modifierPaiement(Client client) {
+        listerPaiement(client);
         int id = ValidationDonnees.validateInts("l'ID du paiement a modifier");
         String champ = ValidationDonnees.validateString("le nom du champ (ex: montant, statut)");
         String valeur = ValidationDonnees.validateString("la nouvelle valeur");
