@@ -19,9 +19,7 @@ public class PaimentService {
     public void enregistrerPaiement() {
         List<Facture> factures =getFacturesDB();
 
-        List<Facture> impayees = factures.stream()
-                .filter(f -> !f.getStatut())
-                .toList();
+        List<Facture> impayees = factures.stream().filter(f ->!f.getStatut()).toList();
 
         if (impayees.isEmpty()) {
             System.out.println("Aucune facture impayée.");
@@ -30,22 +28,24 @@ public class PaimentService {
         for (Facture f : impayees) {
             System.out.println("ID: " + f.getId() + " | Num: " + f.getNumero() + " | Montant: " + f.getMontant());
         }
-
         int id = ValidationDonnees.validateInts("ID facture:");
-
+        double mantant=ValidationDonnees.validateFloats("Enter le montat a payee: ");
         Facture facture = impayees.stream().filter(f -> f.getId() == id).findFirst().orElse(null);
-
         if (facture == null) {
             System.out.println("ID invalide !");
             return;
         }
+        double montantimpyee=facture.getMontant() - mantant;
         double commission = facture.getMontant() * 0.02;
-        Paiement paiement = new Paiement(0, facture.getMontant(), LocalDateTime.now(), true, commission, facture);
-
+        Paiement paiement = new Paiement(0, montantimpyee, LocalDateTime.now(), true, commission, facture);
         int idPaiement = ajouterPaimentDB(paiement, facture.getId());
 
-        if (idPaiement == -1) {
-            System.out.println("Erreur: Impossible d'enregistrer le paiement.");
+        if (idPaiement > 0) {
+            paiement.setId(idPaiement);
+            PaiementPdf.genererRecuePaiement(paiement);
+
+        } else {
+            System.out.println("Erreur lors de l'enregistrement du paiement !");
             return;
         }
         CommissionFinPay com = new CommissionFinPay();
@@ -72,7 +72,6 @@ public class PaimentService {
         System.out.println("_____________________________________________________________________________");
 
     }
-
     // function supprimer paiement
     public void supprimerPaiement() {
         listerPaiement();
