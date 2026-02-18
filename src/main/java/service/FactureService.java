@@ -1,186 +1,154 @@
 package service;
 
+import model.Client;
 import model.Facture;
-import util.DBconnection;
+import model.Prestataire;
 import util.ValidationDonnees;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import service.*;
+import java.util.stream.Collectors;
 
 import static dao.ClientDAO.getClientById;
-import static dao.ClientDAO.supprimerClientDB;
-import static dao.CommissionFinPayDAO.getFacturesDB;
 import static dao.FactureDAO.*;
 import static dao.PrestataireDAO.getPrestataireById;
+import static dao.CommissionFinPayDAO.getFacturesDB;
 
 public class FactureService {
 
-    private ClientService  client = new ClientService();
-    private PrestataireService  prestataire = new PrestataireService();
-    private PaimentService paiment = new PaimentService();
-    private ComisionFinPayService comision = new ComisionFinPayService();
+    private ClientService clientService = new ClientService();
+    private PrestataireService prestataireService = new PrestataireService();
 
-
-
-    public void ajouterFacture() {
+    public void ajouterFacture(Prestataire prestataire) {
         String numero = ValidationDonnees.validateString("le numéro de la facture");
         float montant = ValidationDonnees.validateFloats("montant de la facture");
-        client.listerClient();
-        int idClient = ValidationDonnees.validateInts("id de client");
-        prestataire.listerPrestataire();
-        int idPrestataire = ValidationDonnees.validateInts("id de prestataire");
-        Facture facture = new Facture(numero, montant, false);
-        ajouterFactureDB(facture, idClient, idPrestataire);
-    }
 
-    public void listerFacture() {
-        List<Facture> factures = getFacturesDB();
-        if (factures.isEmpty()) {
-            System.out.println("Aucune facture trouvé dans base de donnée");
+        clientService.listerClient();
+        int idClient = ValidationDonnees.validateInts("id de client pour cette facture");
+
+        if (getClientById(idClient) == null) {
+            System.out.println("Erreur: Client introuvable.");
             return;
         }
-        System.out.println(
-                "________________________________________________________________________________________________________________");
-        System.out.printf("| %-15s | %-15s | %-15s | %-15s | %-15s | %-15s |\n",
-                "ID", "Numero", "Montant", "statut", "nom client", "nom prestataire");
-        System.out.println(
-                "________________________________________________________________________________________________________________");
-        factures.forEach(f -> System.out.printf("| %-15d | %-15s | %-15.2f | %-15b | %-15s | %-15s |\n",
-                f.getId(), f.getNumero(), f.getMontant(), f.getStatut(), f.getClient().getNom(),
-                f.getPrestataire().getNomEntreprise()));
-        System.out.println(
-                "________________________________________________________________________________________________________________");
+
+        Facture facture = new Facture(numero, montant, false);
+        ajouterFactureDB(facture, idClient, prestataire.getId());
+        System.out.println("Facture '" + numero + "' ajoutée avec succès.");
     }
 
-    // fonction pour modifier un factutre
-    public int chengerClientFacture() {
-        client.listerClient();
-        int id = ValidationDonnees.validateInts("le client id");
-        if (getClientById(id) == null) {
-            System.out.println("Ce client n'exist pas dans notre base");
-            return 0;
+    public void listerFacture(Prestataire prestataire) {
+        List<Facture> allFactures = getFacturesDB();
+
+        List<Facture> mesFactures = allFactures.stream()
+                .filter(f -> f.getPrestataire().getId() == prestataire.getId())
+                .collect(Collectors.toList());
+
+        if (mesFactures.isEmpty()) {
+            System.out.println("Vous n'avez aucune facture enregistrée.");
+            return;
         }
-        return id;
+
+        System.out.println("\n--- LISTE DE VOS FACTURES (" + prestataire.getNomEntreprise() + ") ---");
+        afficherListeFactures(mesFactures);
     }
 
-    public int chengerPrestataireFacture() {
-        prestataire.listerPrestataire();
-        int id = ValidationDonnees.validateInts("le Prestataire id");
-        if (getPrestataireById(id) == null) {
-            System.out.println("Ce client n'exist pas dans notre base");
-            return 0;
+    public void modifierFacture(Prestataire prestataire) {
+        listerFacture(prestataire);
+        int id = ValidationDonnees.validateInts("L'id de la facture à modifier");
+
+        Facture facture = getFactureById(id);
+
+        if (facture == null || facture.getPrestataire().getId() != prestataire.getId()) {
+            System.out.println("Accès refusé: Vous ne pouvez modifier que vos propres factures.");
+            return;
         }
-        return id;
+
+        afficherFacture(facture);
+        String champ = ValidationDonnees.validateString("Champ à modifier (numero/montant/status/client)").toLowerCase();
+
+        if (champ.equals("client")) {
+            int idClient = chengerClientFacture();
+            if (idClient != 0) modifierFactureDB(id, "idclient", String.valueOf(idClient));
+        } else if (champ.equals("prestataire")) {
+            System.out.println("Action interdite: Une facture ne peut pas changer de prestataire.");
+        } else {
+            String valeur = ValidationDonnees.validateString("Entrez la nouvelle valeur");
+            modifierFactureDB(id, champ, valeur);
+        }
     }
 
-    public void afficherFacture(Facture facture) {
-        System.out.println("_________________________________________________________________________________________");
-        System.out.println("|                       tu ne peux pas modifier l’id                          |");
-        System.out.println("_________________________________________________________________________________________");
-        System.out.printf("| %-10s | %-10s | %-10s | %-10s | %-10s | %-10s |\n",
-                "ID", "Numero", "Montant", "status", "client", "prestataire");
-        System.out.println("_________________________________________________________________________________________");
-        System.out.printf("| %-10d | %-10s | %-10.2f | %-10b | %-10s | %-10s |\n",
-                facture.getId(), facture.getNumero(), facture.getMontant(), facture.getStatut(),
-                facture.getClient().getNom(), facture.getPrestataire().getNomEntreprise());
-        System.out.println("_________________________________________________________________________________________");
+    public void filterParStatus(Prestataire prestataire) {
+        System.out.println("1: Payées | 2: Non-payées");
+        int choix = ValidationDonnees.validateInts("choix");
+        boolean status = (choix == 1);
+
+        List<Facture> filtered = getFacturesByStatut(status).stream()
+                .filter(f -> f.getPrestataire().getId() == prestataire.getId())
+                .collect(Collectors.toList());
+
+        if (filtered.isEmpty()) {
+            System.out.println("Aucune facture trouvée pour ce statut.");
+        } else {
+            afficherListeFactures(filtered);
+        }
+    }
+
+    public void supprimerFacture(Prestataire prestataire) {
+        listerFacture(prestataire);
+        int id = ValidationDonnees.validateInts("ID de la facture à supprimer");
+
+        Facture facture = getFactureById(id);
+
+        if (facture == null || facture.getPrestataire().getId() != prestataire.getId()) {
+            System.out.println("Erreur: Facture introuvable ou vous n'avez pas le droit de la supprimer.");
+            return;
+        }
+
+        supprimerFactureDB(id);
+        System.out.println("Facture supprimée avec succès.");
     }
 
     public void afficherListeFactures(List<Facture> factures) {
-        if (factures == null || factures.isEmpty()) {
-            System.out.println("La liste des factures est vide.");
-            return;
-        }
-        System.out.println("_________________________________________________________________________________________");
-        System.out.printf("| %-5s | %-12s | %-10s | %-8s | %-15s | %-15s |\n",
-                "ID", "Numero", "Montant", "Status", "Client", "Prestataire");
-        System.out.println("|-------|--------------|------------|----------|-----------------|-----------------|");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        System.out.println("______________________________________________________________________________________________________");
+        System.out.printf("| %-5s | %-12s | %-10s | %-8s | %-15s | %-17s |\n",
+                "ID", "Numero", "Montant", "Status", "Client", "Date Creation");
+        System.out.println("|-------|--------------|------------|----------|-----------------|-------------------|");
+
         for (Facture f : factures) {
-            System.out.printf("| %-5d | %-12s | %-10.2f | %-8b | %-15s | %-15s |\n",
-                    f.getId(), f.getNumero(), f.getMontant(), f.getStatut(), f.getClient().getNom(),
-                    f.getPrestataire().getNomEntreprise());
+            String dateFormatted = (f.getDate() != null) ? f.getDate().format(formatter) : "N/A";
+            System.out.printf("| %-5d | %-12s | %-10.2f | %-8b | %-15s | %-17s |\n",
+                    f.getId(), f.getNumero(), f.getMontant(), f.getStatut(), f.getClient().getNom(), dateFormatted);
         }
-        System.out.println("_________________________________________________________________________________________");
+        System.out.println("______________________________________________________________________________________________________");
     }
 
-    public void modifierFacture() {
-        listerFacture();
-        int id = ValidationDonnees.validateInts("l'id du facture tu veux modifier ");
-        Facture facture = getFactureById(id);
-        if (facture == null) {
-            System.out.println("Facture avec l'id" + id + "n'exist pas");
-            return;
-        }
-        afficherFacture(facture);
-        String champ = ValidationDonnees.validateString("le champ tu veux modifier").toLowerCase();
-        if (!champ.equals("numero") && !champ.equals("montant") && !champ.equals("status") && !champ.equals("client")
-                && !champ.equals("prestataire")) {
-            System.out.println("Champ invalide ! Choisissez entre: numero, montant, status,client,prestataire.");
-            return;
-        }
-        if (champ.equals("client")) {
-            int idClient = chengerClientFacture();
-            if (idClient == 0) {
-                return;
-            }
-            modifierFactureDB(id, "idclient", String.valueOf(idClient));
-            return;
-        }
-        if (champ.equals("prestataire")) {
-            int idPrestataire = chengerPrestataireFacture();
-            if (idPrestataire == 0) {
-                return;
-            }
-            modifierFactureDB(id, "idprestataire", String.valueOf(idPrestataire));
-            return;
-        }
-        String valeur = ValidationDonnees.validateString("Entrez la nouvelle valeur : ").toLowerCase();
-        modifierFactureDB(id, champ, valeur);
+    private void afficherFacture(Facture f) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String dateFormatted = (f.getDate() != null) ? f.getDate().format(formatter) : "N/A";
+
+        System.out.printf("[Facture ID: %d] No: %s | Montant: %.2f | Payé: %b | Client: %s | Date: %s\n",
+                f.getId(), f.getNumero(), f.getMontant(), f.getStatut(), f.getClient().getNom(), dateFormatted);
     }
 
-    public void filterParStatus() {
-        System.out.println("saisir 1 pour les  factures payée et 2 pour  les factures non payées");
-        int choix = ValidationDonnees.validateInts("choix");
-        List<Facture> factures = new ArrayList<>();
-        if (choix == 1) {
-            factures = getFacturesByStatut(true);
-        } else if (choix == 2) {
-            factures = getFacturesByStatut(false);
-        } else {
-            System.out.println("choix invalide vous devez entrez 1 ou 2");
-            return;
-        }
-        if (factures.isEmpty()) {
-            System.out.println("aucune facture trouvée");
-            return;
-        }
-        afficherListeFactures(factures);
+    public int chengerClientFacture() {
+        clientService.listerClient();
+        int id = ValidationDonnees.validateInts("Nouveau client ID");
+        return (getClientById(id) != null) ? id : 0;
     }
 
-    // function pour supprimer une facture
-    public void supprimerFacture() {
-        listerFacture();
-        int id = ValidationDonnees.validateInts("facture id tu veux supprimer ");
-        Facture facture = getFactureById(id);
-        if (facture == null) {
-            System.out.println("Le client avec l'id " + id + " n'exist pas");
+    public void listerFactureParClient(Client client) {
+        List<Facture> allFactures = getFacturesDB();
+        List<Facture> clientFactures = allFactures.stream()
+                .filter(f -> f.getClient().getId() == client.getId())
+                .toList();
+        if (clientFactures.isEmpty()) {
+            System.out.println("Aucune facture trouvée pour le client : " + client.getNom());
             return;
         }
-        supprimerClientDB(id);
+        System.out.println("\n--- VOS FACTURES (" + client.getNom() + ") ---");
+        afficherListeFactures(clientFactures);
     }
-    public void afficherFactureparPrestatire(){
-        int id=ValidationDonnees.validateInts("Entrez id de prestataire pour trouver sa facture");
-        if(getFacturesByPrestataire(id).isEmpty()){
-            System.out.println("aucune facture trouvé pour ce prestataire");
-        }
-
-        afficherListeFactures(getFacturesByPrestataire(id));
-
-
-
-
-    }
-
-
 }
