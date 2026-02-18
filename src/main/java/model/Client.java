@@ -3,14 +3,25 @@ package model;
 public class Client {
     private int id;
     private String nom;
+    private float solde;
 
-    public Client(String nom){
+    public Client(String nom , float solde){
         this.nom = nom;
+        this.solde = solde;
     }
 
-    public Client(int id, String nom) {
+    public Client(int id, String nom,float solde) {
         this.id = id;
         this.nom = nom;
+        this.solde = solde;
+    }
+
+    public float getSolde() {
+        return solde;
+    }
+
+    public void setSolde(float solde) {
+        this.solde = solde;
     }
 
     public int getId() {

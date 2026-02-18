@@ -1,5 +1,6 @@
 package service;
 
+import model.Client;
 import model.CommissionFinPay;
 import model.Facture;
 import model.Paiement;
@@ -16,8 +17,12 @@ import static dao.PaimentDAO.*;
 public class PaimentService {
     private ClientService  client = new ClientService();
 
-    public void enregistrerPaiement() {
-        List<Facture> factures =getFacturesDB();
+    public void enregistrerPaiement(Client client) {
+        List<Facture> factures = getFacturesDB().stream().filter(element -> element.getClient().getId() == client.getId()).toList();
+
+        if (factures.isEmpty()){
+            System.out.printf("facture khawiin");
+        }
 
         List<Facture> impayees = factures.stream().filter(f ->!f.getStatut()).toList();
 
@@ -57,8 +62,8 @@ public class PaimentService {
     }
 
     // function litser paiment
-    public void listerPaiement() {
-        List<Paiement> paiements = getPaimentDB();
+    public void listerPaiement(Client client) {
+        List<Paiement> paiements = getPaimentDB().stream().filter(element -> element.getFacture().getClient().getId() == client.getId() ).toList();
         if (paiements.isEmpty()) {
             System.out.println("Aucune paiment trouvé dans base de donnée");
             return;
@@ -73,16 +78,16 @@ public class PaimentService {
 
     }
     // function supprimer paiement
-    public void supprimerPaiement() {
-        listerPaiement();
+    public void supprimerPaiement(Client client) {
+        listerPaiement(client);
         int id = ValidationDonnees.validateInts("l'ID du paiement à supprimer");
         supprimerPaimentDB(id);
 
     }
 
     // function modifier Paiement
-    public void modifierPaiement() {
-        listerPaiement();
+    public void modifierPaiement(Client client) {
+        listerPaiement(client);
         int id = ValidationDonnees.validateInts("l'ID du paiement a modifier");
         String champ = ValidationDonnees.validateString("le nom du champ (ex: montant, statut)");
         String valeur = ValidationDonnees.validateString("la nouvelle valeur");
