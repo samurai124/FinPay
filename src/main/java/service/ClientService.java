@@ -73,18 +73,26 @@ public class ClientService {
 
     // fonction puur chercher client a partire de son id
     public void chercherClient() {
-        int id = ValidationDonnees.validateInts("l'id du client tu cherche");
-        if (getClientById(id) == null) {
-            System.out.println("Le prestataire avec l'id : " + id + "n'exist pas");
+        String nom = ValidationDonnees.validateString("entrez le nom de client : ");
+        if(getClientByName(nom) == null){
+            System.out.println("client n'existe pas");
             return;
         }
-        System.out.println("_______________________________");
-        System.out.printf("| %-10s | %-10s |\n",
-                "ID", "Nom");
-        System.out.println("_______________________________");
-        System.out.printf("| %-10d | %-10s |\n",
-                getClientById(id).getId(), getClientById(id).getNom());
-        System.out.println("_______________________________");
+        System.out.println("le client : " + getClientByName(nom).getNom());
     }
+
+//        int id = ValidationDonnees.validateInts("l'id du client tu cherche");
+//        if (getClientById(id) == null) {
+//            System.out.println("Le prestataire avec l'id : " + id + "n'exist pas");
+//            return;
+//        }
+//        System.out.println("_______________________________");
+//        System.out.printf("| %-10s | %-10s |\n",
+//                "ID", "Nom");
+//        System.out.println("_______________________________");
+//        System.out.printf("| %-10d | %-10s |\n",
+//                getClientById(id).getId(), getClientById(id).getNom());
+//        System.out.println("_______________________________");
+//    }
 
 }

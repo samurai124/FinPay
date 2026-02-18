@@ -160,11 +160,10 @@ public class FactureDAO {
                 rs.getInt("id"),
                 rs.getString("numero"),
                 rs.getDouble("montant"),
-                rs.getBoolean("statut"),
-                        ClientDAO.getClientById(rs.getInt("idClient")),
-                        PrestataireDAO.getPrestataireById(rs.getInt("idPrestataire"))
+                rs.getBoolean("status"),
+                        ClientDAO.getClientById(rs.getInt("idClient")),//objet client
+                        PrestataireDAO.getPrestataireById(rs.getInt("idPrestataire"))//objet prestataire
                 );
-
 
                 factures.add(facture);
             }
@@ -172,7 +171,6 @@ public class FactureDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return factures;
     }
 

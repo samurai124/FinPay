@@ -1,10 +1,13 @@
 package App;
 
 import Statistiques.Statistiques;
+import dao.FactureDAO;
 import model.Prestataire;
 import service.*;
 import util.ValidationDonnees;
 import java.util.Scanner;
+
+import static dao.FactureDAO.getFacturesByPrestataire;
 import static dao.PrestataireDAO.*;
 
 public class Main {
@@ -164,7 +167,9 @@ public class Main {
                     "3- Supprimer facture\n" +
                     "4- Lister factures \n" +
                     "5- filter les factures par status\n" +
-                    "6- Retour");
+                    "6- filter les factures par prestataire\n" +
+
+                    "7- Retour");
             System.out.println("-------------------------------------------------------");
 
             c = entreChoix();
@@ -174,10 +179,11 @@ public class Main {
                 case 3 -> facture.supprimerFacture();
                 case 4 -> facture.listerFacture();
                 case 5 -> facture.filterParStatus();
-                case 6 -> System.out.println("Retour");
-                default -> System.out.println("entrez un nombre entre 1 et 6");
+                case 6 ->new FactureService().afficherFactureparPrestatire();
+                case 7 -> System.out.println("Retour");
+                default -> System.out.println("entrez un nombre entre 1 et 7");
             }
-        } while (c != 6);
+        } while (c != 7);
     }
 
     public static int chercher(String phrase) {

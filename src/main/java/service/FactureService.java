@@ -169,6 +169,18 @@ public class FactureService {
         }
         supprimerClientDB(id);
     }
+    public void afficherFactureparPrestatire(){
+        int id=ValidationDonnees.validateInts("Entrez id de prestataire pour trouver sa facture");
+        if(getFacturesByPrestataire(id).isEmpty()){
+            System.out.println("aucune facture trouvé pour ce prestataire");
+        }
+
+        afficherListeFactures(getFacturesByPrestataire(id));
+
+
+
+
+    }
 
 
 }

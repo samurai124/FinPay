@@ -72,6 +72,7 @@ public class ClientDAO {
     }
 
     public static Client getClientById(int id) {
+
         String query = "SELECT id, nom FROM client WHERE id = ?";
         try {
             Connection conn = getConnection();
@@ -89,5 +90,23 @@ public class ClientDAO {
         }
         return null;
     }
-
 }
+
+//    public static Client getClientByName(String nom){
+//        try{
+//            Connection connection = getConnection();
+//            String requet = "SELECT * FROM client WHERE nom like CONCAT('%',?,'%') ";
+//            PreparedStatement pst = connection.prepareStatement(requet);
+//            pst.setString(1,nom);
+//            ResultSet rs = pst.executeQuery();
+//            if(rs.next()){
+//                return new Client(rs.getInt("id"), rs.getString("nom"));
+//
+//            }
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//
+//}
