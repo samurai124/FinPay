@@ -14,7 +14,7 @@ public class PaimentDAO {
 
     // Paiement
     public static int ajouterPaimentDB(Paiement paiement, int idFacture) {
-        String insert = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture) VALUES (?, ?, ?, ?, ?)";
+        String insert = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture,modePaiement) VALUES (?, ?, ?, ?, ?,?)";
         String update = "UPDATE facture SET status = true WHERE id = ?";
         String selectId = "SELECT MAX(id) FROM paiement";
         int idPaiement = -1;
@@ -27,6 +27,7 @@ public class PaimentDAO {
              p1.setBoolean(3, paiement.isStatut());
              p1.setDouble(4, paiement.getMontantCommision());
              p1.setInt(5, idFacture);
+             p1.setString(6, paiement.getModePaiement());
              p1.executeUpdate();
 
             ResultSet rs = p3.executeQuery();
@@ -96,6 +97,7 @@ public class PaimentDAO {
                         res.getTimestamp("datePaiement").toLocalDateTime(),
                         res.getBoolean("statut"),
                         res.getDouble("montantCommision"),
+                        res.getString("modePaiement"),
                         f);
                 paiements.add(p);
             }
