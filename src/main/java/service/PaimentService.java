@@ -45,12 +45,9 @@ public class PaimentService {
             System.out.println("ID invalide !");
             return;
         }
-
         double commission = montantSaisi * 0.05;
-
         Paiement paiement = new Paiement(0, montantSaisi, LocalDateTime.now(), true, commission,mode ,facture);
         paiement.setModePaiement(mode);
-
         int idPaiement = ajouterPaimentDB(paiement, facture.getId());
 
         if (idPaiement > 0) {
