@@ -52,11 +52,11 @@ public class ExcelAdmin {
             File dir = new File("xlss");
             if (!dir.exists()) dir.mkdirs();
 
-            String fileName = "xlss/factures_impayees.xls";
+            String fileName = "xlss/rapportGenerale.xls";
             try (FileOutputStream fileOut = new FileOutputStream(fileName)) {
                 workbook.write(fileOut);
                 workbook.close();
-                System.out.println("Fichier Excel généré avec succès dans le dossier pdfs");
+                System.out.println("Fichier Excel généré avec succès dans le dossier xlss");
             }
 
         } catch (Exception e) {
