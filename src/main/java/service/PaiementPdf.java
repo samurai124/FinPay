@@ -13,9 +13,8 @@ import java.time.format.DateTimeFormatter;
 public class PaiementPdf {
     public static void genererRecuePaiement(Paiement paiement){
 //      String recuePaiement="C:/Users/soufiane/Desktop/pdf/recupaiement "+paiement.getId()+".pdf";
-        String rootPath = System.getProperty("user.dir");
-        String folderName = rootPath + File.separator + "pdfs";
 
+        String folderName = "pdfs";
         File directory = new File(folderName);
         if (!directory.exists()) {
             directory.mkdirs();
