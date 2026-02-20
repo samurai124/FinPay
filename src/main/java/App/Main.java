@@ -15,6 +15,7 @@ public class Main {
      static void main(String[] args){
 
          System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "off");
+         System.setProperty("org.apache.poi.util.POILogger", "org.apache.poi.util.NullLogger");
 
          Menu menu = new Menu();
          menu.menuPrencipal();
