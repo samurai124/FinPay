@@ -15,7 +15,17 @@ import java.time.temporal.ChronoUnit;
 
 public class ExcelAdmin {
     public static void exelData() {
-        String requet = "SELECT facture.date, prestataire.nomEntreprise, COUNT(facture.id) AS 'totalefactures', SUM(facture.montant) AS 'totaleMontant' FROM prestataire INNER JOIN facture ON prestataire.id = facture.idPrestataire WHERE facture.status = true GROUP BY (prestataire.id);";
+//        String requet = "SELECT prestataire.id, facture.date, prestataire.nomEntreprise, COUNT(facture.id) AS 'totalefactures', SUM(facture.montant) AS 'totaleMontant' FROM prestataire INNER JOIN facture ON prestataire.id = facture.idPrestataire WHERE facture.status = true GROUP BY (prestataire.id);";
+     String requet = "SELECT \n" +
+             "    prestataire.id,\n" +
+             "    prestataire.nomEntreprise,\n" +
+             "    COUNT(facture.id) AS totalFactures,\n" +
+             "    SUM(facture.montant) AS totalMontant\n" +
+             "FROM prestataire\n" +
+             "INNER JOIN facture \n" +
+             "    ON prestataire.id = facture.idPrestataire\n" +
+             "WHERE facture.status = true\n" +
+             "GROUP BY prestataire.id, prestataire.nomEntreprise;";
 
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(requet);
