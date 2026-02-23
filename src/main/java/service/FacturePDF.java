@@ -20,7 +20,7 @@ public class FacturePDF {
                 directory.mkdirs();
             }
 
-            String fullPath = folderName + File.separator + "facture_" + facture.getNumero() + ".pdf";
+            String fullPath = folderName + File.separator + "facture_" + facture.getId() + ".pdf";
 
             PdfWriter writer = new PdfWriter(fullPath);
             PdfDocument pdf = new PdfDocument(writer);
@@ -40,15 +40,15 @@ public class FacturePDF {
             document.add(new Paragraph("FinPay").setBold().setFontSize(20));
             document.add(new Paragraph("- La facture N° : " + facture.getNumero()));
 
-            document.add(new Paragraph("\n--- Informations du Client ---").setBold());
+            document.add(new Paragraph("\n----------------------------- Informations du Client -----------------------------").setBold());
             document.add(new Paragraph("- Nom : " + facture.getClient().getNom()));
             document.add(new Paragraph("- ID : " + facture.getClient().getId()));
 
-            document.add(new Paragraph("\n--- Informations du Prestataire ---").setBold());
+            document.add(new Paragraph("\n----------------------------- Informations du Prestataire -----------------------------").setBold());
             document.add(new Paragraph("- Entreprise : " + facture.getPrestataire().getNomEntreprise()));
             document.add(new Paragraph("- Email : " + facture.getPrestataire().getEmail()));
 
-            document.add(new Paragraph("\n--- Détails Financiers ---").setBold());
+            document.add(new Paragraph("\n----------------------------- Détails Financiers -----------------------------").setBold());
             document.add(new Paragraph("- Date : " + (facture.getDate() != null ? facture.getDate().format(formatter) : "N/A")));
             document.add(new Paragraph("- Montant HT : " + facture.getMontant() + " MAD"));
 
