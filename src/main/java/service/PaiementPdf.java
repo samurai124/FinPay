@@ -25,9 +25,8 @@ public class PaiementPdf {
           Document document=new Document(pdf);
            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-          document.add(new Paragraph("----------------- Recu de Paiement -----------------------").setTextAlignment(TextAlignment.CENTER)
-                  .setItalic());
-          document.add(new Paragraph(" Numéro du paiement : "+paiement.getId()).setTextAlignment(TextAlignment.CENTER).setItalic());
+          document.add(new Paragraph("----------------- Recu de Paiement -----------------------").setTextAlignment(TextAlignment.CENTER).setItalic());
+          document.add(new Paragraph(" Total Facture : "+paiement.getFacture().getMontant()).setTextAlignment(TextAlignment.CENTER).setItalic());document.add(new Paragraph(" Numéro du paiement : "+paiement.getId()).setTextAlignment(TextAlignment.CENTER).setItalic());
           document.add(new Paragraph(" Numéro de la facture: "+paiement.getFacture().getNumero()).setTextAlignment(TextAlignment.CENTER).setItalic());
           document.add(new Paragraph(" Date du paiement: "+paiement.getDatePaiement().format(formatter)).setTextAlignment(TextAlignment.CENTER).setItalic());
           document.add(new Paragraph(" Méthode de paiement: "+paiement.getModePaiement()).setTextAlignment(TextAlignment.CENTER).setItalic());
