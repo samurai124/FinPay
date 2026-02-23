@@ -85,7 +85,7 @@ public class Menu {
                     Statistiques.afficherStatistiquesGlobales();
                     Statistiques.afficherHistoriqueFinancier();
                 }
-                case 4 -> Excel.ExcelPrestatire.afficherFacturePrestatire();
+                case 4 -> Excel.ExcelPrestatire.afficherFacturePrestatire(prestataire);
                 case 5 -> System.out.println("Retour au menu principal...");
                 default -> System.out.println("Entrez un nombre entre 1 et 5");
             }
