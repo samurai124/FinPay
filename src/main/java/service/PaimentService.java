@@ -1,5 +1,6 @@
 package service;
 
+import dao.PaimentDAO;
 import model.Client;
 import model.CommissionFinPay;
 import model.Facture;
@@ -46,11 +47,9 @@ public class PaimentService {
             return;
         }
 
-        double commission = montantSaisi * 0.05;
-
+        double commission = calculerCommistion(montantSaisi);
         Paiement paiement = new Paiement(0, montantSaisi, LocalDateTime.now(), true, commission,mode ,facture);
         paiement.setModePaiement(mode);
-
         int idPaiement = ajouterPaimentDB(paiement, facture.getId());
 
         if (idPaiement > 0) {
@@ -68,6 +67,9 @@ public class PaimentService {
         System.out.println("Paiement effectué avec succès.");
     }
 
+    public double calculerCommistion(double montant){
+        return montant * 0.02;
+    }
 
     // function litser paiment
     public void listerPaiement(Client client) {

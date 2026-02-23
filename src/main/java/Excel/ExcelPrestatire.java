@@ -2,6 +2,7 @@ package Excel;
 
 import model.Client;
 import model.Facture;
+import model.Prestataire;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,10 +19,9 @@ import java.util.List;
 import static util.DBconnection.getConnection;
 
 public class ExcelPrestatire {
-    public static void afficherFacturePrestatire() {
-        int id = ValidationDonnees.validateInts("id");
+    public static void afficherFacturePrestatire(Prestataire prestataire) {
 
-        List<Facture> factures = dao.FactureDAO.getFacturesByPrestataire(id);
+        List<Facture> factures = dao.FactureDAO.getFacturesByPrestataire(prestataire.getId());
         double totalpaye = 0;
         double totalfacture = 0;
         double totalNonPaye = 0;
