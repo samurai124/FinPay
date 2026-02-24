@@ -1,10 +1,11 @@
-package serviceTest;
+package com.example;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import service.FactureService;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UpdateFactureStatusTest {
@@ -20,6 +21,7 @@ public class UpdateFactureStatusTest {
     void update_facture_status_case1() {
 
         boolean result = factureService.updateFactureStatus(1, true);
+
 
         assertTrue(result);
     }

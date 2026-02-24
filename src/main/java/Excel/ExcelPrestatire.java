@@ -14,6 +14,8 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static util.DBconnection.getConnection;
@@ -67,8 +69,15 @@ public class ExcelPrestatire {
         totalNonPayeRow.createCell(3).setCellValue(totalNonPaye);
 
 
+        LocalDate now = LocalDate.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM_yyyy");
+
+        String monthYear = now.format(formatter);
+
+
         try {
-            FileOutputStream file = new FileOutputStream(" facturesprestatairemois.xls");
+            FileOutputStream file = new FileOutputStream(" facturesprestataire"+monthYear+".xls");
             workbook.write(file);
             file.close();
             workbook.close();

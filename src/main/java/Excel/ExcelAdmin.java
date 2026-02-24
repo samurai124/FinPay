@@ -19,6 +19,7 @@ public class ExcelAdmin {
         String requet = "SELECT facture.date, prestataire.nomEntreprise, COUNT(facture.id) AS 'totalefactures', SUM(facture.montant) AS 'totaleMontant' FROM prestataire INNER JOIN facture ON prestataire.id = facture.idPrestataire WHERE facture.status = true GROUP BY (prestataire.id);";
 
         String fileName = "file";
+        String file = "file";
 
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(requet);
@@ -61,8 +62,8 @@ public class ExcelAdmin {
 
             File dir = new File("xlss");
             if (!dir.exists()) dir.mkdirs();
-
-             fileName = "xlss/rapportGenerale"+monthYear+".xls";
+            file = "rapportGenerale" + monthYear + ".xls";
+            fileName = "xlss/" + file;
             try (FileOutputStream fileOut = new FileOutputStream(fileName)) {
                 workbook.write(fileOut);
                 workbook.close();
@@ -72,9 +73,8 @@ public class ExcelAdmin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return fileName;
+        return file;
     }
-
 
 
     public static String exportFacturesImpayees() {
@@ -133,7 +133,7 @@ public class ExcelAdmin {
             if (!dir.exists()) dir.mkdirs();
 
 
-            fileName = "xlss/facturesimpayees"+monthYear+".xls";
+            fileName = "xlss/facturesimpayees" + monthYear + ".xls";
             try (FileOutputStream fileOut = new FileOutputStream(fileName)) {
                 workbook.write(fileOut);
                 workbook.close();

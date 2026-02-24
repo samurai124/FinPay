@@ -2,6 +2,7 @@ package dao;
 
 import model.Client;
 import model.Facture;
+import model.FacturePrestataire;
 import model.Prestataire;
 import service.FacturePDF;
 import util.DBconnection;
@@ -188,4 +189,7 @@ public class FactureDAO {
             e.printStackTrace();
         }
     }
+
+
+
 }

@@ -11,14 +11,19 @@ import javax.print.attribute.standard.PageRanges;
 import java.io.File;
 import java.time.format.DateTimeFormatter;
 public class PaiementPdf {
-    public static void genererRecuePaiement(Paiement paiement){
+    public static String genererRecuePaiement(Paiement paiement){
 
         String folderName = "pdfs";
         File directory = new File(folderName);
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        String recuePaiement = folderName + File.separator + "recu_paiement_" + paiement.getId() + ".pdf";
+
+
+        String fileName = "recu_paiement_" + paiement.getId() + ".pdf";
+
+
+        String recuePaiement = folderName + File.separator + fileName;
         try {
           PdfWriter writer=new PdfWriter(recuePaiement);
           PdfDocument pdf=new PdfDocument(writer);
@@ -42,5 +47,7 @@ public class PaiementPdf {
       }catch (Exception e){
           System.out.println("Erreur lors de la génération du PDF : " + e.getMessage());
       }
+
+        return fileName;
     }
 }
