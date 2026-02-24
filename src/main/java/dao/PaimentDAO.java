@@ -2,6 +2,7 @@ package dao;
 
 import model.Facture;
 import model.Paiement;
+import util.DBconnection;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -46,6 +47,17 @@ public class PaimentDAO {
     }
 
 
+    public static void updateFactureStatus(int idFacture, boolean status) {
+        String query = "UPDATE facture SET status = ? WHERE id = ?";
+        try (Connection conn = DBconnection.getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setBoolean(1, status);
+            statement.setInt(2, idFacture);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     public static void supprimerPaimentDB(int id) {
         String requetSql = "DELETE FROM Paiement WHERE id = ?";
         try {
