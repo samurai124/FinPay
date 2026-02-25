@@ -11,15 +11,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public class ExcelAdmin {
-    public static String exelData() {
+    public static void exelData() {
         String requet = "SELECT facture.date, prestataire.nomEntreprise, COUNT(facture.id) AS 'totalefactures', SUM(facture.montant) AS 'totaleMontant' FROM prestataire INNER JOIN facture ON prestataire.id = facture.idPrestataire WHERE facture.status = true GROUP BY (prestataire.id);";
-
-        String fileName = "file";
-        String file = "file";
 
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(requet);
@@ -53,17 +49,10 @@ public class ExcelAdmin {
                 sheet.autoSizeColumn(i);
             }
 
-            LocalDate now = LocalDate.now();
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM_yyyy");
-
-            String monthYear = now.format(formatter);
-
-
             File dir = new File("xlss");
             if (!dir.exists()) dir.mkdirs();
-            file = "rapportGenerale" + monthYear + ".xls";
-            fileName = "xlss/" + file;
+
+            String fileName = "xlss/rapportGenerale.xls";
             try (FileOutputStream fileOut = new FileOutputStream(fileName)) {
                 workbook.write(fileOut);
                 workbook.close();
@@ -73,13 +62,13 @@ public class ExcelAdmin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return file;
     }
 
 
-    public static String exportFacturesImpayees() {
+
+    public static void exportFacturesImpayees() {
         String requet = "SELECT facture.id, client.nom, facture.date, facture.montant FROM client INNER JOIN facture ON client.id = facture.idClient WHERE facture.status = false";
-        String fileName = "file";
+
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(requet);
              ResultSet rs = statement.executeQuery()) {
@@ -122,18 +111,10 @@ public class ExcelAdmin {
                 sheet.autoSizeColumn(i);
             }
 
-            LocalDate now = LocalDate.now();
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM_yyyy");
-
-            String monthYear = now.format(formatter);
-
-
             File dir = new File("xlss");
             if (!dir.exists()) dir.mkdirs();
 
-
-            fileName = "xlss/facturesimpayees" + monthYear + ".xls";
+            String fileName = "xlss/facturesimpayeesmois.xls";
             try (FileOutputStream fileOut = new FileOutputStream(fileName)) {
                 workbook.write(fileOut);
                 workbook.close();
@@ -144,8 +125,6 @@ public class ExcelAdmin {
             System.err.println("Erreur : " + e.getMessage());
             e.printStackTrace();
         }
-
-        return fileName;
     }
 
 }

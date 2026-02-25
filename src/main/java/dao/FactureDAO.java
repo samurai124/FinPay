@@ -2,7 +2,6 @@ package dao;
 
 import model.Client;
 import model.Facture;
-import model.FacturePrestataire;
 import model.Prestataire;
 import service.FacturePDF;
 import util.DBconnection;
@@ -177,19 +176,4 @@ public class FactureDAO {
         }
         return factures;
     }
-
-    public static void updateFactureStatus(int idFacture, boolean status) {
-        String query = "UPDATE facture SET status = ? WHERE id = ?";
-        try (Connection conn = DBconnection.getConnection();
-             PreparedStatement statement = conn.prepareStatement(query)) {
-            statement.setBoolean(1, status);
-            statement.setInt(2, idFacture);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
 }
