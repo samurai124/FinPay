@@ -10,6 +10,7 @@ public class Facture {
     private Prestataire prestataire;
     private Client client;
     private LocalDateTime date ;
+    public Facture(){}
 
     public Facture(String numero, double montant,boolean status){
         this.numero = numero;
