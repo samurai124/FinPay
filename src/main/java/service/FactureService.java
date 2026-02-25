@@ -1,5 +1,6 @@
 package service;
 
+import dao.FactureDAO;
 import model.Client;
 import model.Facture;
 import model.Prestataire;
@@ -150,5 +151,15 @@ public class FactureService {
         }
         System.out.println("\n--- VOS FACTURES (" + client.getNom() + ") ---");
         afficherListeFactures(clientFactures);
+    }
+
+
+    public boolean updateFactureStatus(int id, boolean status){
+        try {
+            FactureDAO.updateFactureStatus(id, status);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

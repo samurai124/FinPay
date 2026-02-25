@@ -11,7 +11,8 @@ import java.io.File;
 import java.time.format.DateTimeFormatter;
 
 public class FacturePDF {
-    public static void facturepdf(Facture facture) {
+    public static String facturepdf(Facture facture) {
+        String fileName = "file";
         try {
             String folderName = "pdfs";
             File directory = new File(folderName);
@@ -20,7 +21,9 @@ public class FacturePDF {
                 directory.mkdirs();
             }
 
-            String fullPath = folderName + File.separator + "facture_" + facture.getNumero() + ".pdf";
+            fileName = "facture_" + facture.getNumero() + ".pdf";
+
+            String fullPath = folderName + File.separator + fileName;
 
             PdfWriter writer = new PdfWriter(fullPath);
             PdfDocument pdf = new PdfDocument(writer);
@@ -66,5 +69,6 @@ public class FacturePDF {
         } catch (Exception e) {
             System.err.println("Erreur : " + e.getMessage());
         }
+        return  fileName;
     }
 }

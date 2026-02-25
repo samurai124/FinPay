@@ -15,17 +15,7 @@ import java.time.temporal.ChronoUnit;
 
 public class ExcelAdmin {
     public static void exelData() {
-//        String requet = "SELECT prestataire.id, facture.date, prestataire.nomEntreprise, COUNT(facture.id) AS 'totalefactures', SUM(facture.montant) AS 'totaleMontant' FROM prestataire INNER JOIN facture ON prestataire.id = facture.idPrestataire WHERE facture.status = true GROUP BY (prestataire.id);";
-     String requet = "SELECT \n" +
-             "    prestataire.id,\n" +
-             "    prestataire.nomEntreprise,\n" +
-             "    COUNT(facture.id) AS totalFactures,\n" +
-             "    SUM(facture.montant) AS totalMontant\n" +
-             "FROM prestataire\n" +
-             "INNER JOIN facture \n" +
-             "    ON prestataire.id = facture.idPrestataire\n" +
-             "WHERE facture.status = true\n" +
-             "GROUP BY prestataire.id, prestataire.nomEntreprise;";
+        String requet = "SELECT facture.date, prestataire.nomEntreprise, COUNT(facture.id) AS 'totalefactures', SUM(facture.montant) AS 'totaleMontant' FROM prestataire INNER JOIN facture ON prestataire.id = facture.idPrestataire WHERE facture.status = true GROUP BY (prestataire.id);";
 
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(requet);
@@ -77,7 +67,7 @@ public class ExcelAdmin {
 
 
     public static void exportFacturesImpayees() {
-        String requet = "SELECT facture.id, client.nom,client.solde, facture.date, facture.montant FROM client INNER JOIN facture ON client.id = facture.idClient WHERE facture.status = false";
+        String requet = "SELECT facture.id, client.nom, facture.date, facture.montant FROM client INNER JOIN facture ON client.id = facture.idClient WHERE facture.status = false";
 
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(requet);
@@ -92,8 +82,6 @@ public class ExcelAdmin {
             header.createCell(2).setCellValue("Date");
             header.createCell(3).setCellValue("Montant (MAD)");
             header.createCell(4).setCellValue("Jours de Retard");
-            header.createCell(5).setCellValue("Solde Client");
-
 
             int rowNum = 1;
             LocalDate aujourdhui = LocalDate.now();
@@ -105,7 +93,6 @@ public class ExcelAdmin {
                 String nomClient = rs.getString("nom");
                 java.sql.Date dateSql = rs.getDate("date");
                 double montant = rs.getDouble("montant");
-                double SoldeClient=rs.getDouble("solde");
 
                 long joursDeRetard = 0;
                 if (dateSql != null) {
@@ -118,10 +105,9 @@ public class ExcelAdmin {
                 row.createCell(2).setCellValue(dateSql.toString());
                 row.createCell(3).setCellValue(montant);
                 row.createCell(4).setCellValue(joursDeRetard > 0 ? joursDeRetard : 0);
-                row.createCell(5).setCellValue(SoldeClient);
             }
 
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 5; i++) {
                 sheet.autoSizeColumn(i);
             }
 

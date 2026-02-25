@@ -2,7 +2,6 @@ package dao;
 
 import model.Client;
 import model.Facture;
-import model.FacturePrestataire;
 import model.Prestataire;
 import service.FacturePDF;
 import util.DBconnection;
@@ -177,44 +176,4 @@ public class FactureDAO {
         }
         return factures;
     }
-
-    public static List<FacturePrestataire> totalFacturesChaquePresatataire(){
-        List<FacturePrestataire>factures=new ArrayList<>();
-        String query = "SELECT p.id ,Count(p.id) as'nombreFactures' ,SUM(f.montant) as 'sommeMontant'\n" +
-                "FROM FACTURE f\n" +
-                "JOIN Prestataire p  ON  f.idPrestataire=p.id\n" +
-                "GROUP BY p.id;";
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-             ResultSet rs=stmt.executeQuery();
-             while(rs.next()){
-                 int idPrestataire=rs.getInt("id");
-                 int nombreFactures =rs.getInt("nombreFactures");
-                 double sommeMontant=rs.getDouble("sommeMontant");
-                 factures.add(new FacturePrestataire(idPrestataire,nombreFactures,sommeMontant));
-
-             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return factures;
-    }
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
+}

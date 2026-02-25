@@ -8,35 +8,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static dao.FactureDAO.getFactureById;
+import static dao.FactureDAO.updateFactureStatus;
 import static util.DBconnection.getConnection;
 
 public class PaimentDAO {
 
     // Paiement
     public static int ajouterPaimentDB(Paiement paiement, int idFacture) {
-        String insert = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture,modePaiement) VALUES (?, ?, ?, ?, ?,?)";
-        String update = "UPDATE facture SET status = true WHERE id = ?";
+        String insert = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture, modePaiement) VALUES (?, ?, ?, ?, ?, ?)";
         String selectId = "SELECT MAX(id) FROM paiement";
         int idPaiement = -1;
+
         try (Connection con = getConnection();
              PreparedStatement p1 = con.prepareStatement(insert);
-             PreparedStatement p3=con.prepareStatement(selectId);
-             PreparedStatement p2 = con.prepareStatement(update)) {
-             p1.setDouble(1, paiement.getMontant());
-             p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
-             p1.setBoolean(3, paiement.isStatut());
-             p1.setDouble(4, paiement.getMontantCommision());
-             p1.setInt(5, idFacture);
-             p1.setString(6, paiement.getModePaiement());
-             p1.executeUpdate();
+             PreparedStatement p3 = con.prepareStatement(selectId)) {
+
+            p1.setDouble(1, paiement.getMontant());
+            p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
+            p1.setBoolean(3, paiement.isStatut());
+            p1.setDouble(4, paiement.getMontantCommision());
+            p1.setInt(5, idFacture);
+            p1.setString(6, paiement.getModePaiement());
+            p1.executeUpdate();
+
+            updateFactureStatus(idFacture, true);
 
             ResultSet rs = p3.executeQuery();
             if (rs.next()) {
                 idPaiement = rs.getInt(1);
             }
-
-            p2.setInt(1, idFacture);
-            p2.executeUpdate();
 
         } catch (SQLException e) {
             System.out.println("Erreur paiement: " + e.getMessage());
@@ -44,7 +44,6 @@ public class PaimentDAO {
 
         return idPaiement;
     }
-
 
     public static void supprimerPaimentDB(int id) {
         String requetSql = "DELETE FROM Paiement WHERE id = ?";
