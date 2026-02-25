@@ -67,4 +67,7 @@ public class FacturePDF {
             System.err.println("Erreur : " + e.getMessage());
         }
     }
+    public  static String genererNomFacture(int idFacture){
+        return "facture_" +idFacture+".pdf";
+    }
 }

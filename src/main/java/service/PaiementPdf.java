@@ -18,7 +18,8 @@ public class PaiementPdf {
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        String recuePaiement = folderName + File.separator + "recu_paiement_" + paiement.getId() + ".pdf";
+      String recuePaiement = folderName + File.separator + "recu_" + paiement.getId() + ".pdf";
+//        String recuePaiement = folderName + File.separator +genererNomRecu(paiement.getId());
         try {
           PdfWriter writer=new PdfWriter(recuePaiement);
           PdfDocument pdf=new PdfDocument(writer);
@@ -42,5 +43,15 @@ public class PaiementPdf {
       }catch (Exception e){
           System.out.println("Erreur lors de la génération du PDF : " + e.getMessage());
       }
+    }
+
+    // Générer nom de reçu de paiement
+    public static String genererNomRecu(int idPaiement) {
+        return "recu_" + idPaiement + ".pdf";
+    }
+
+    // Générer nom de rapport avec année et mois
+    public static String genererNomRapport(String mois, String annee) {
+        return "rapport" + mois + annee + ".xls";
     }
 }

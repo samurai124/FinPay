@@ -71,7 +71,7 @@ public class PaimentService {
         return montant * 0.02;
     }
 
-    // function litser paiment
+
     public void listerPaiement(Client client) {
         List<Paiement> paiements = getPaimentDB().stream().filter(element -> element.getFacture().getClient().getId() == client.getId() ).toList();
         if (paiements.isEmpty()) {
@@ -87,7 +87,7 @@ public class PaimentService {
         System.out.println("_____________________________________________________________________________");
 
     }
-    // function supprimer paiement
+
     public void supprimerPaiement(Client client) {
         listerPaiement(client);
         int id = ValidationDonnees.validateInts("l'ID du paiement à supprimer");
@@ -95,7 +95,6 @@ public class PaimentService {
 
     }
 
-    // function modifier Paiement
     public void modifierPaiement(Client client) {
         listerPaiement(client);
         int id = ValidationDonnees.validateInts("l'ID du paiement a modifier");
