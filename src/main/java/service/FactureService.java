@@ -5,6 +5,7 @@ import model.Facture;
 import model.Prestataire;
 import util.ValidationDonnees;
 
+import java.sql.PreparedStatement;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,5 +151,11 @@ public class FactureService {
         }
         System.out.println("\n--- VOS FACTURES (" + client.getNom() + ") ---");
         afficherListeFactures(clientFactures);
+    }
+
+    public double calculersomme(List<Facture> pres){
+return  pres.stream()
+        .mapToDouble(Facture::getMontant).sum();
+
     }
 }
