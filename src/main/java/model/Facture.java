@@ -27,7 +27,9 @@ public class Facture {
         this.prestataire=prestataire;
         this.date = date;
     }
-
+public Facture(int id){
+    this.id = id;
+}
     public LocalDateTime getDate() {
         return date;
     }

@@ -21,6 +21,11 @@ public class Paiement {
         this.facture = facture;
     }
 
+    public Paiement(double montant, Facture facture){
+        this.montant = montant;
+        this.facture = facture;
+    }
+
     public String getModePaiement() {
         return modePaiement;
     }

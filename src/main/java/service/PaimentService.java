@@ -1,5 +1,6 @@
 package service;
 
+import dao.FactureDAO;
 import dao.PaimentDAO;
 import model.Client;
 import model.CommissionFinPay;
@@ -103,5 +104,19 @@ public class PaimentService {
         modifierPaimentDB(id, champ, valeur);
     }
 
+    public boolean updateFactureStatus(int id,Paiement paiement){
+        if(paiement != null){
+            if(paiement.getFacture().getMontant() <= paiement.getMontant()){
+                PaimentDAO.updateFactureStatus(id);
+                System.out.println("paid");
+                return true;
+            } else{
+                System.out.println("pending");
+                return false;
+            }
+        }
+        System.out.println("pending");
+        return false;
+    }
 
 }

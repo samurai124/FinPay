@@ -16,13 +16,11 @@ public class PaimentDAO {
     // Paiement
     public static int ajouterPaimentDB(Paiement paiement, int idFacture) {
         String insert = "INSERT INTO Paiement(montant, datePaiement, statut, montantCommision, idFacture,modePaiement) VALUES (?, ?, ?, ?, ?,?)";
-        String update = "UPDATE facture SET status = true WHERE id = ?";
         String selectId = "SELECT MAX(id) FROM paiement";
         int idPaiement = -1;
         try (Connection con = getConnection();
              PreparedStatement p1 = con.prepareStatement(insert);
-             PreparedStatement p3=con.prepareStatement(selectId);
-             PreparedStatement p2 = con.prepareStatement(update)) {
+             PreparedStatement p3=con.prepareStatement(selectId)){
              p1.setDouble(1, paiement.getMontant());
              p1.setTimestamp(2, Timestamp.valueOf(paiement.getDatePaiement()));
              p1.setBoolean(3, paiement.isStatut());
@@ -36,23 +34,17 @@ public class PaimentDAO {
                 idPaiement = rs.getInt(1);
             }
 
-            p2.setInt(1, idFacture);
-            p2.executeUpdate();
-
         } catch (SQLException e) {
             System.out.println("Erreur paiement: " + e.getMessage());
         }
 
         return idPaiement;
     }
-
-
-    public static void updateFactureStatus(int idFacture, boolean status) {
-        String query = "UPDATE facture SET status = ? WHERE id = ?";
+    public static void updateFactureStatus(int idFacture) {
+        String query = "UPDATE facture SET status = true WHERE id = ?";
         try (Connection conn = DBconnection.getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
-            statement.setBoolean(1, status);
-            statement.setInt(2, idFacture);
+            statement.setInt(1, idFacture);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
