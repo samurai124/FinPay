@@ -2,6 +2,7 @@ package dao;
 
 import model.Client;
 import model.Facture;
+import model.FacturePrestataire;
 import model.Prestataire;
 import service.FacturePDF;
 import util.DBconnection;
@@ -176,4 +177,46 @@ public class FactureDAO {
         }
         return factures;
     }
+
+
+
+public static List<FacturePrestataire> totalFacturesChaquePresatataire() {
+    List<FacturePrestataire> factures = new ArrayList<>();
+    String query = "SELECT p.id ,Count(p.id) as'nombreFacture' ,SUM(f.montant) as 'sommeMontant'\n" +
+            "FROM FACTURE f\n" +
+            "JOIN Prestataire p  ON  f.idPrestataire=p.id\n" +
+            "GROUP BY p.id;";
+    try (Connection conn = getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            int idPrestataire = rs.getInt("id");
+            int nombreFactures = rs.getInt("nombreFacture");
+            double sommeMontant = rs.getDouble("sommeMontant");
+            factures.add(new FacturePrestataire(idPrestataire,nombreFactures,sommeMontant));
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return factures;
+}
+
+    public static void updateFactureStatus(int idFacture, boolean status) {
+        String query = "UPDATE facture SET status = ? WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+
+            statement.setBoolean(1, status);
+            statement.setInt(2, idFacture);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Erreur mise à jour facture: " + e.getMessage());
+        }
+    }
+
+
+
 }
