@@ -18,7 +18,16 @@ public class Facture {
         this.date = LocalDateTime.now();
     }
 
-    public Facture(int id ,String numero, double montant,boolean status,Client client,Prestataire prestataire,LocalDateTime date){
+    public Facture(double montant) {
+        this.montant = montant;
+    }
+
+    public Facture(int id, double montant) {
+        this.id = id;
+        this.montant = montant;
+    }
+
+    public Facture(int id , String numero, double montant, boolean status, Client client, Prestataire prestataire, LocalDateTime date){
         this.id = id;
         this.numero = numero;
         this.montant = montant;

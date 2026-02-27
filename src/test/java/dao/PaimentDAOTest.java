@@ -5,12 +5,20 @@ import model.Paiement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.openxmlformats.schemas.drawingml.x2006.picture.PicDocument;
 import service.PaimentService;
 
-import static dao.FactureDAO.getFactureById;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
+import static dao.FactureDAO.getFactureById;
+import static dao.FactureDAO.getFacturesByStatut;
+import static org.junit.jupiter.api.Assertions.*;
+@ExtendWith(MockitoExtension.class)
 class PaimentDAOTest {
     PaimentService p ;
     Facture facture;
@@ -32,7 +40,7 @@ void initialisation(){
     @Test
     @DisplayName("paiement partiel")
     void updateFactureStatus2() {
-        facture = getFactureById(2);;
+        facture = getFactureById(2);
         paiement = new Paiement(100, facture);
         boolean test = p.updateFactureStatus(2,paiement);
         assertFalse(test);
@@ -45,4 +53,7 @@ void initialisation(){
         boolean test = p.updateFactureStatus(3,paiement);
         assertFalse(test);
     }
-}
+
+    }
+
+

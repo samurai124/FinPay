@@ -2,6 +2,7 @@ package service;
 
 import dao.FactureDAO;
 import dao.PaimentDAO;
+import dao.TestDAO;
 import model.Client;
 import model.CommissionFinPay;
 import model.Facture;
@@ -17,6 +18,16 @@ import static dao.CommissionFinPayDAO.getFacturesDB;
 import static dao.PaimentDAO.*;
 
 public class PaimentService {
+
+   TestDAO testDAO;
+
+    public PaimentService(TestDAO testDAO) {
+        this.testDAO = testDAO;
+    }
+
+    public PaimentService() {
+    }
+
     private ClientService  client = new ClientService();
 
     public void enregistrerPaiement(Client client) {
@@ -112,6 +123,26 @@ public class PaimentService {
                 return true;
             } else{
                 System.out.println("pending");
+                return false;
+            }
+        }
+        System.out.println("pending");
+        return false;
+    }
+
+
+    public boolean testupdateFactureStatus(int id,Paiement paiement){
+        if(paiement != null){
+            if(paiement.getFacture() != null){
+                if(paiement.getFacture().getMontant() <= paiement.getMontant()){
+                    testDAO.updateFactureStatus(id);
+                    System.out.println("paid");
+                    return true;
+                } else{
+                    System.out.println("pending");
+                    return false;
+                }
+            }else{
                 return false;
             }
         }

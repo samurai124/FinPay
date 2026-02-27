@@ -1,5 +1,7 @@
 package service;
 
+import dao.FactureDAO;
+import dao.TestDAO;
 import model.Client;
 import model.Facture;
 import model.Prestataire;
@@ -17,6 +19,15 @@ import static dao.PrestataireDAO.getPrestataireById;
 import static dao.CommissionFinPayDAO.getFacturesDB;
 
 public class FactureService {
+
+   TestDAO testDAO;
+
+    public FactureService(TestDAO testDAO) {
+        this.testDAO = testDAO;
+    }
+
+    public FactureService() {
+    }
 
     private ClientService clientService = new ClientService();
     private PrestataireService prestataireService = new PrestataireService();
@@ -158,4 +169,13 @@ return  pres.stream()
         .mapToDouble(Facture::getMontant).sum();
 
     }
+
+    public double calculertotal(int id){
+        List<Facture> pres = testDAO.getFacturesByPrestataire(id);
+        return  pres.stream()
+                .mapToDouble(Facture::getMontant).sum();
+
+    }
+
+
 }

@@ -1,15 +1,22 @@
 package service;
 
+import dao.FactureDAO;
+import dao.TestDAO;
 import model.Facture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static dao.FactureDAO.getFacturesByPrestataire;
 import static org.junit.jupiter.api.Assertions.*;
-
+@ExtendWith(MockitoExtension.class)
 class FactureServiceTest {
     FactureService f ;
 
@@ -34,4 +41,20 @@ class FactureServiceTest {
         assertEquals( 5950,f.calculersomme(factures));
     }
 
+
+    // utilisant mock
+
+@Mock
+    TestDAO testDAO;
+  @InjectMocks
+    FactureService factureService;
+  @Test
+    void  calculertotal(){
+      List<Facture> factures = List.of(
+              new Facture(100.0),
+              new Facture(200.0)
+      );
+      Mockito.when(testDAO.getFacturesByPrestataire(1)).thenReturn(factures);
+      assertEquals(300,factureService.calculertotal(1));
+  }
 }
