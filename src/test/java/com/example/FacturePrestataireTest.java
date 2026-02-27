@@ -41,8 +41,7 @@ public class FacturePrestataireTest {
     @DisplayName("Cas liste vide")
     void TestListeVide(){
         List<FacturePrestataire> resultats=FactureDAO.totalFacturesChaquePresatataire();
-//        assertTrue(resultats.isEmpty());
-        assertFalse(resultats.isEmpty());
+        assertTrue(resultats.isEmpty(),"la liste n'est pas vide");
     }
     @Test
     @DisplayName(" Test plusieurs Facture")

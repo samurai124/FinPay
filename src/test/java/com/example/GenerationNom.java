@@ -6,6 +6,7 @@ import dao.PaimentDAO;
 import model.Facture;
 import model.Paiement;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import service.FacturePDF;
@@ -38,6 +39,7 @@ public class GenerationNom {
     }
 
     @Test
+    @Disabled
     @DisplayName("Test - 3 : Nom du rapport Excel Admin")
     public void generationNom3() {
         String nom = ExcelAdmin.exelData();

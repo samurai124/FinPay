@@ -16,16 +16,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 
 public class ExcelAdmin {
-
     public static String exelData() {
+        String requet = "SELECT facture.date, prestataire.nomEntreprise, COUNT(facture.id) AS 'totalefactures', SUM(facture.montant) AS 'totaleMontant' FROM prestataire INNER JOIN facture ON prestataire.id = facture.idPrestataire WHERE facture.status = true GROUP BY (prestataire.id,facture.date,prestataire.nomEntreprise);";
         String mois = LocalDate.now().getMonth().getDisplayName(TextStyle.FULL, Locale.FRENCH);
         int annee = LocalDate.now().getYear();
         String fileName = "rapportGenerale_" + mois + "_" + annee + ".xls";
         String path = "xlss/" + fileName;
-
-        String requet = "SELECT facture.date, prestataire.nomEntreprise, COUNT(facture.id) AS 'totalefactures', SUM(facture.montant) AS 'totaleMontant' " +
-                "FROM prestataire INNER JOIN facture ON prestataire.id = facture.idPrestataire " +
-                "WHERE facture.status = true GROUP BY (prestataire.id);";
 
         try (Connection connection = DBconnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(requet);
