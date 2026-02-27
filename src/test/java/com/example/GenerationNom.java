@@ -43,6 +43,6 @@ public class GenerationNom {
     @DisplayName("Test - 3 : Nom du rapport Excel Admin")
     public void generationNom3() {
         String nom = ExcelAdmin.exelData();
-        assertEquals("SELECT facture.date, prestataire.nomEntreprise, COUNT(facture.id) AS 'totalefactures', SUM(facture.montant) AS 'totaleMontant' FROM prestataire INNER JOIN facture ON prestataire.id = facture.idPrestataire WHERE facture.status = true GROUP BY (prestataire.id);", nom);
+        assertEquals("rapportGenerale_février_2026.xls", nom);
     }
 }
