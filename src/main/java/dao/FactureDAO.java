@@ -204,24 +204,13 @@ public static List<FacturePrestataire> totalFacturesChaquePresatataire() {
     public static void updateFactureStatus(int idFacture, boolean status) {
         String query = "UPDATE facture SET status = ? WHERE id = ?";
 
-        try (Connection conn = getConnection();
+        try (Connection conn = getConnection(); 
              PreparedStatement statement = conn.prepareStatement(query)) {
 
             statement.setBoolean(1, status);
             statement.setInt(2, idFacture);
 
-            statement.executeUpdate();
-    public static void updateFactureStatus(int idFacture, boolean status) {
-        String query = "UPDATE facture SET status = ? WHERE id = ?";
-
-        try (Connection conn = getConnection(); // Utilise ta méthode de connexion habituelle
-             PreparedStatement statement = conn.prepareStatement(query)) {
-
-            statement.setBoolean(1, status);
-            statement.setInt(2, idFacture); // On lie l'ID de la facture ici
-
-            statement.executeUpdate(); // <-- Indispensable pour appliquer le changement
-
+            statement.executeUpdate(); 
         } catch (SQLException e) {
             System.out.println("Erreur mise à jour facture: " + e.getMessage());
         }
