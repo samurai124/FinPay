@@ -41,6 +41,6 @@ public class GenerationNom {
     @DisplayName("Test - 3 : Nom du rapport Excel Admin")
     public void generationNom3() {
         String nom = ExcelAdmin.exelData();
-        assertEquals("rapportGenerale02_2026.xls", nom);
+        assertEquals("rapportGenerale_février_2026.xls", nom);
     }
 }
